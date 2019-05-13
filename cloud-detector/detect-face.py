@@ -8,9 +8,13 @@ assert subscription_key
 
 face_api_url = config.face_api_url
 
-image_url = 'https://upload.wikimedia.org/wikipedia/commons/3/37/Dagestani_man_and_woman.jpg'
+img_data = open(
+    'cloud-detector/resources/Dagestani_man_and_woman.jpg', 'rb').read()
 
-headers = {'Ocp-Apim-Subscription-Key': subscription_key}
+headers = {
+    'Ocp-Apim-Subscription-Key': subscription_key,
+    'Content-Type': 'application/octet-stream'
+}
 
 params = {
     'returnFaceId': 'true',
@@ -18,6 +22,6 @@ params = {
     'returnFaceAttributes': 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
 }
 
-response = requests.post(face_api_url, params=params,
-                         headers=headers, json={"url": image_url})
+response = requests.post(face_api_url, params=params, data=img_data,
+                         headers=headers)
 print(json.dumps(response.json()))
