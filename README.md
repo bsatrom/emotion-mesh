@@ -21,7 +21,7 @@ This repository is broken up into sub-projects that each manage one aspect of th
   c. Green and Red buttons light up.
     - Green captures a photo and transitions to Processing State.
     - Red cancels the demo and returns to Idle State.
-  d. Neopixels transition into a pulse animation
+  d. Neopixels transition into a pulse animation.
 
 3. [Processing State]
   a. Webcam is turned off.
