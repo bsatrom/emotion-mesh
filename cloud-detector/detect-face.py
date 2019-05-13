@@ -1,11 +1,12 @@
 import requests
 import json
 import os
+import config
 
-subscription_key = os.environ['FACE_API_KEY']
+subscription_key = config.face_api_key
 assert subscription_key
 
-face_api_url = 'https://centralus.api.cognitive.microsoft.com/face/v1.0/detect'
+face_api_url = config.face_api_url
 
 image_url = 'https://upload.wikimedia.org/wikipedia/commons/3/37/Dagestani_man_and_woman.jpg'
 
