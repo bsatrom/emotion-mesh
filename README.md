@@ -40,6 +40,7 @@ This repository is broken up into sub-projects that each manage one aspect of th
 
 5. **[Response State]**
   a. Monitor shows the yes/no response and updates running statistics. Monitor also shows the cloud detector result if it differs from the local.
+  b. Ultrasonic is re-activated.
   c. Neopixels turn green if the detector was correct and red, if not.
 
 6. Once the individual leaves the demo space and the Ultrasonic distance sensor detects its baseline reading, the demo returns to idle state.

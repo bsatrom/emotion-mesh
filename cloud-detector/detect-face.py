@@ -2,26 +2,23 @@ import requests
 import json
 import os
 import config
+import cognitive_face as CF
 
 subscription_key = config.face_api_key
 assert subscription_key
 
 face_api_url = config.face_api_url
+assert face_api_url
 
-img_data = open(
-    'cloud-detector/resources/Dagestani_man_and_woman.jpg', 'rb').read()
+CF.Key.set(subscription_key)
+CF.BaseUrl.set(face_api_url)
 
-headers = {
-    'Ocp-Apim-Subscription-Key': subscription_key,
-    'Content-Type': 'application/octet-stream'
-}
+attrs = 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise'
 
-params = {
-    'returnFaceId': 'true',
-    'returnFaceLandmarks': 'false',
-    'returnFaceAttributes': 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
-}
+# faces = CF.face.detect('cloud-detector/resources/Dagestani_man_and_woman.jpg',
+#                       face_id=True, landmarks=False, attributes=attrs)
 
-response = requests.post(face_api_url, params=params, data=img_data,
-                         headers=headers)
-print(json.dumps(response.json()))
+faces = CF.face.detect('cloud-detector/resources/streamers.png',
+                       face_id=True, landmarks=False, attributes=attrs)
+
+print(faces)
