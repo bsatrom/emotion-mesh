@@ -8,14 +8,14 @@ This repository is broken up into sub-projects that each manage one aspect of th
 
 ![](/assets/EmotionMesh.png)
 
-1. [Idle State] Between runs of the Emotion Mesh Demo, the network is in the following state:
+1. **[Idle State]** Between runs of the Emotion Mesh Demo, the network is in the following state:
   a. Coral-connected webcam is off
   b. Coral-connected Monitor hides the webcam view and displays full-screen statistics about previous runs
   c. Neopixels play an attract animation
   d. Green and Red buttons are off
   c. Ultrasonic distance sensor is active and looking for a person to step into the demo area, which triggers the Capture State
 
-2. [Capture State]
+2. **[Capture State]**
   a. Webcam is activated
   b. Monitor shows live webcam view with Face Tracking and instructions for the user to convey an emotion (happy, sad, etc.) and hit the green button to capture a photo for processing.
   c. Green and Red buttons light up.
@@ -23,22 +23,22 @@ This repository is broken up into sub-projects that each manage one aspect of th
     - Red cancels the demo and returns to Idle State.
   d. Neopixels transition into a pulse animation.
 
-3. [Processing State]
+3. **[Processing State]**
   a. Webcam is turned off.
   b. Monitor shows processing still photo and a processing message.
   c. Green and Red buttons are turned off.
   d. Neopixels transition to a loading/processing animations.
   e. Coral Dev Board submits photo for local and cloud processing
-    - [Local Processing] Use the Coral Edge TPU module to process the captured still, and use the result to mark up a copy of the image.
-    - [Cloud Processing] Use the Azure ML Face API to send the captured still, and use the result to mark up a copy of the image. 
+    - **[Local Processing]** Use the Coral Edge TPU module to process the captured still, and use the result to mark up a copy of the image.
+    - **[Cloud Processing]** Use the Azure ML Face API to send the captured still, and use the result to mark up a copy of the image. 
 
-4. [Results State]
+4.**[Results State]**
   a. Monitor shows the processed still photo from the local run and asks the user to hit green button if the emotion was interpreted correctly, and red if not. 
   b. Green and Red Buttons are activated and waiting for a response.
   c. Neopixels return to a pulsing/waiting state.
   d. Once the user taps a button, demo moves into Response state.
 
-5. [Response State]
+5. **[Response State]**
   a. Monitor shows the yes/no response and updates running statistics. Monitor also shows the cloud detector result if it differs from the local.
   c. Neopixels turn green if the detector was correct and red, if not.
 
@@ -66,7 +66,7 @@ In addition to local capabilities, this project also demonstrates using the Part
 
 The local dashboard view of the Emotion Mesh project shows the following metrics:
 
-- # of images processed
+- No. of images processed
 - % of local emotions detected correctly/incorrectly
 - % of cloud emotions (Azure Face API) detected correctly/incorrectly
 - % of each emotion detected
