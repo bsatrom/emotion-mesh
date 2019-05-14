@@ -4,7 +4,7 @@
 <head>
   <title>Coral Web Panel</title>
   <link rel="icon" type="image/png" sizes="16x16" href="favicon.png" />
-  <link href="https://fonts.googleapis.com/css?family=Anton|Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
   <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css">
   <link rel="stylesheet" type="text/css" href="coral.css">
@@ -25,8 +25,8 @@
     </h1>
   </header>
   <div id="app">
-    <b-button type="is-info">Capture Image</b-button>
-    <b-button type="is-danger">Reset Demo</b-button>
+    <b-button v-on:click="captureImage" type="is-info">Capture Image</b-button>
+    <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>
   </div>
   <div id="container"></div>
 
@@ -37,6 +37,14 @@
     el: '#app',
     data: {
 
+    },
+    methods: {
+      captureImage: function () {
+        window.captureFrame();
+      },
+      reset: function () {
+        console.log('foo');
+      }
     }
   })
 </script>

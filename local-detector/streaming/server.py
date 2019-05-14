@@ -54,6 +54,13 @@ def OverlayMessage(svg):
 def _parse_server_message(data):
     message = pb2.ServerBound()
     message.ParseFromString(data)
+    
+    return message
+
+def _parse_image_capture(data):
+    message = pb2.FrameCapture()
+    message.ParseFromString(data)
+
     return message
 
 def _shutdown(sock):
@@ -280,6 +287,7 @@ class StreamingServer:
     def _process_command(self, client, command):
         was_streaming = bool(self._enabled_clients)
 
+        logger.info('Command: ' + str(command))
         if command is ClientCommand.ENABLE:
             self._enabled_clients.add(client)
         elif command is ClientCommand.DISABLE:
@@ -365,6 +373,7 @@ class ClientCommand(Enum):
     STOP = 1
     ENABLE = 2
     DISABLE = 3
+    FRAME = 4
 
 class Client:
     def __init__(self, name, sock, command_queue):
@@ -420,6 +429,10 @@ class Client:
         if dropped:
             self._logger.warning('Running behind, dropping messages')
         return dropped
+
+    def _frame_cap(self):
+        self._logger.info('Capturing frame image...')
+        self._send_command(ClientCommand.FRAME)
 
     def _tx_run(self):
         try:
@@ -518,6 +531,7 @@ class ProtoClient(Client):
 
     def _receive_message(self):
         buf = self._receive_bytes(4)
+        
         if not buf:
             return None
         num_bytes = struct.unpack('!I', buf)[0]
@@ -582,6 +596,7 @@ class WsProtoClient(ProtoClient):
             packets = []
             while True:
                 packet = self._receive_packet()
+        
                 if packet.opcode == 0:
                     # Continuation
                     if not packets:
@@ -599,6 +614,7 @@ class WsProtoClient(ProtoClient):
                         joined = bytearray()
                         for p in packets:
                             joined.extend(p.payload)
+                        self._logger.info("PARSED: " + str(_parse_server_message(joined)))
                         return _parse_server_message(joined)
                 elif packet.opcode == 8:
                     # Close.
