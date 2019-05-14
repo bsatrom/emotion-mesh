@@ -14,7 +14,7 @@ face_api_url = config.face_api_url
 assert face_api_url
 
 image_base_path = 'cloud-detector/resources/'
-image_name = 'streamers'
+image_name = 'webcam-what-demo'
 image_path = image_base_path + image_name + '.png'
 
 CF.Key.set(subscription_key)
@@ -22,13 +22,8 @@ CF.BaseUrl.set(face_api_url)
 
 attrs = 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise'
 
-# faces = CF.face.detect('cloud-detector/resources/Dagestani_man_and_woman.jpg',
-#                       face_id=True, landmarks=False, attributes=attrs)
-
 faces = CF.face.detect(image_path, face_id=True,
                        landmarks=False, attributes=attrs)
-
-# Convert width height to a point in a rectangle
 
 
 def getCoordsForText(faceDictionary):
@@ -36,6 +31,8 @@ def getCoordsForText(faceDictionary):
     left = rect['left']
     top = rect['top']
     return (left, top - 10)
+
+# Convert width height to a point in a rectangle
 
 
 def getRectangle(faceDictionary):
@@ -50,6 +47,7 @@ def getRectangle(faceDictionary):
 def getMainEmotion(faceDictionary):
     # Get the emotion collection and sort in acending order to get the top result
     emotions = faceDictionary['faceAttributes']['emotion']
+    # print(emotions)
     emotions = sorted(emotions, key=emotions.get, reverse=True)
     return emotions[0]
 
