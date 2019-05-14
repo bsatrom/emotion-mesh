@@ -16,9 +16,6 @@ parser.add_argument('--image_path',
                     default='webcam-what-demo.png')
 args = parser.parse_args()
 
-print(args.image_path)
-print(os.path.splitext(args.image_path)[0])
-
 subscription_key = config.face_api_key
 assert subscription_key
 
