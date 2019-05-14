@@ -177,7 +177,8 @@ def render_gen(args):
 
 def add_render_gen_args(parser):
     parser.add_argument('--model',
-                        help='.tflite model path', required=True)
+                        help='.tflite model path', 
+                        default='/home/mendel/emotion-mesh/local-detector/model/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite')
     parser.add_argument('--labels',
                         help='labels file path')
     parser.add_argument('--top_k', type=int, default=50,
