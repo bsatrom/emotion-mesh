@@ -3,9 +3,21 @@ import json
 import os
 import config
 import operator
+import argparse
+
 import cognitive_face as CF
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
+
+parser = argparse.ArgumentParser(
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument('--image_path',
+                    help='Path to a local image file to process',
+                    default='webcam-what-demo.png')
+args = parser.parse_args()
+
+print(args.image_path)
+print(os.path.splitext(args.image_path)[0])
 
 subscription_key = config.face_api_key
 assert subscription_key
@@ -14,8 +26,8 @@ face_api_url = config.face_api_url
 assert face_api_url
 
 image_base_path = 'cloud-detector/resources/'
-image_name = 'webcam-what-demo'
-image_path = image_base_path + image_name + '.png'
+image_name = os.path.splitext(args.image_path)[0]
+image_path = image_base_path + args.image_path
 
 CF.Key.set(subscription_key)
 CF.BaseUrl.set(face_api_url)
