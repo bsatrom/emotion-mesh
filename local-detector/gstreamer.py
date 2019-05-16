@@ -14,6 +14,8 @@ import time
 
 import numpy as np
 
+import globals
+
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('GLib', '2.0')
@@ -110,6 +112,7 @@ def Worker(process, maxsize=0):
         thread.join()
 
 def save_frame(rgb, size, overlay=None, ext='png'):
+    print('SIZE: ' + str(size))
     tag = '%010d' % int(time.monotonic() * 1000)
     img = Image.frombytes('RGB', size, rgb, 'raw')
     name = 'img-%s.%s' % (tag, ext)
@@ -191,8 +194,9 @@ def on_new_sample(sink, pipeline, render_overlay, layout, images, get_command):
         save_frame = False
 
         command = get_command()
-        if command == COMMAND_SAVE_FRAME:
+        if (command == COMMAND_SAVE_FRAME) or (globals.capture_frame):
             save_frame = True
+            globals.capture_frame = False
         elif command == COMMAND_PRINT_INFO:
             print('Timestamp: %.2f' % time.monotonic())
             print('Render size: %d x %d' % layout.render_size)

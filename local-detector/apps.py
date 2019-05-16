@@ -3,7 +3,7 @@ import logging
 import signal
 
 from camera import make_camera
-from gstreamer import Display, run_gen, save_frame
+from gstreamer import Display, run_gen
 from streaming.server import StreamingServer
 
 import svg

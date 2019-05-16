@@ -287,7 +287,6 @@ class StreamingServer:
     def _process_command(self, client, command):
         was_streaming = bool(self._enabled_clients)
 
-        logger.info('Command: ' + str(command))
         if command is ClientCommand.ENABLE:
             self._enabled_clients.add(client)
         elif command is ClientCommand.DISABLE:
@@ -297,7 +296,10 @@ class StreamingServer:
             if self._clients.remove(client):
                 client.stop()
             logger.info('Number of active clients: %d', len(self._clients))
-
+        elif command is ClientCommand.FRAME:
+            self._camera.capture_frame()
+            logger.info('Frame captured')
+        
         is_streaming = bool(self._enabled_clients)
 
         if not was_streaming and is_streaming:
@@ -430,10 +432,6 @@ class Client:
             self._logger.warning('Running behind, dropping messages')
         return dropped
 
-    def _frame_cap(self):
-        self._logger.info('Capturing frame image...')
-        self._send_command(ClientCommand.FRAME)
-
     def _tx_run(self):
         try:
             while True:
@@ -502,6 +500,16 @@ class ProtoClient(Client):
         which = message.WhichOneof('message')
         if which == 'stream_control':
             self._handle_stream_control(message.stream_control)
+        elif which == 'frame_capture':
+            self._handle_frame_capture(message.frame_capture)
+    
+    def _handle_frame_capture(self, frame_capture):
+        overlay = frame_capture.overlay
+        self._logger.info('frame_capture with overlay %s', overlay)
+
+        with self._lock:
+            self._logger.info('Capturing Frame')
+            self._send_command(ClientCommand.FRAME)
 
     def _handle_stream_control(self, stream_control):
         enabled = stream_control.enabled
@@ -614,7 +622,6 @@ class WsProtoClient(ProtoClient):
                         joined = bytearray()
                         for p in packets:
                             joined.extend(p.payload)
-                        self._logger.info("PARSED: " + str(_parse_server_message(joined)))
                         return _parse_server_message(joined)
                 elif packet.opcode == 8:
                     # Close.
