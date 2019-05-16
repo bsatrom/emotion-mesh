@@ -1,9 +1,11 @@
 import os
 import threading
+import time
 
 import gstreamer
 import pipelines
 import globals
+
 
 from gst import *
 
@@ -48,6 +50,8 @@ class Camera:
 
     def capture_frame(self):
         globals.capture_frame = True
+        time.sleep(.300)
+        return globals.image_name
 
     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
         raise NotImplemented

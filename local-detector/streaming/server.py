@@ -12,6 +12,7 @@ import subprocess
 import sys
 import threading
 import time
+from shutil import copyfile
 
 from enum import Enum
 from http.server import BaseHTTPRequestHandler
@@ -297,8 +298,19 @@ class StreamingServer:
                 client.stop()
             logger.info('Number of active clients: %d', len(self._clients))
         elif command is ClientCommand.FRAME:
-            self._camera.capture_frame()
-            logger.info('Frame captured')
+            captured_frame = self._camera.capture_frame()
+            logger.info('Frame captured: ' + captured_frame)
+            # Copy photo into cloud-detector folder
+            copyfile(captured_frame, '/home/mendel/emotion-mesh/cloud-detector/images/' + captured_frame)
+            time.sleep(.200)
+            # Move photo into local-detector folder
+            os.rename(captured_frame, '/home/mendel/emotion-mesh/local-detector/images/' + captured_frame)
+            # Call cloud detector
+            # Call local detector
+            # Move cloud and local photos into streaming/assets folder
+            # Call back to client with results image and details
+            # Save original and results files to SD Card
+            # Cleanup files
         
         is_streaming = bool(self._enabled_clients)
 

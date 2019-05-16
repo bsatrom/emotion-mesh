@@ -112,10 +112,10 @@ def Worker(process, maxsize=0):
         thread.join()
 
 def save_frame(rgb, size, overlay=None, ext='png'):
-    print('SIZE: ' + str(size))
     tag = '%010d' % int(time.monotonic() * 1000)
     img = Image.frombytes('RGB', size, rgb, 'raw')
     name = 'img-%s.%s' % (tag, ext)
+    globals.image_name = name
     img.save(name)
     print('Frame saved as "%s"' % name)
     if overlay:
