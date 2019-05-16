@@ -50,7 +50,7 @@ class Camera:
 
     def capture_frame(self):
         globals.capture_frame = True
-        time.sleep(.300)
+        time.sleep(1)
         return globals.image_name
 
     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):

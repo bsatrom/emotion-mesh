@@ -10,9 +10,11 @@ import socket
 import struct
 import subprocess
 import sys
+sys.path.insert(0, '/home/mendel/emotion-mesh/cloud-detector')
 import threading
 import time
 from shutil import copyfile
+from detect_face import perform_cloud_detection
 
 from enum import Enum
 from http.server import BaseHTTPRequestHandler
@@ -303,17 +305,19 @@ class StreamingServer:
             # Copy photo into cloud-detector folder
             cloud_path = '/home/mendel/emotion-mesh/cloud-detector/images/'
             copyfile(captured_frame, cloud_path + captured_frame)
-            time.sleep(.200)
+            time.sleep(.500)
             # Move photo into local-detector folder
             local_path = '/home/mendel/emotion-mesh/local-detector/images/'
             os.rename(captured_frame, local_path + captured_frame)
             # Call cloud detector
+            perform_cloud_detection(captured_frame)
             # Call local detector
             # Move cloud and local photos into streaming/assets folder
             # Call back to client with results image and details
             # Save original and results files to SD Card
             # Cleanup files
             os.remove(cloud_path + captured_frame)
+            os.remove(cloud_path + os.path.splitext(captured_frame)[0] + '_modified.png')
             os.remove(local_path + captured_frame)
             logger.info('Cleanup complete!')
         
