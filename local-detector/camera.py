@@ -3,6 +3,7 @@ import threading
 
 import gstreamer
 import pipelines
+import globals
 
 from gst import *
 
@@ -44,6 +45,9 @@ class Camera:
     def stop_recording(self):
         gstreamer.quit()
         self._thread.join()
+
+    def capture_frame(self):
+        globals.capture_frame = True
 
     def make_pipeline(self, fmt, profile, inline_headers, bitrate, intra_period):
         raise NotImplemented

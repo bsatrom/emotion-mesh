@@ -3,11 +3,16 @@ syntax = "proto3";
 message ServerBound {
   oneof message {
     StreamControl stream_control = 1;
+    FrameCapture frame_capture = 2;
   }
 }
 
 message StreamControl {
   bool enabled = 1;
+}
+
+message FrameCapture {
+  bool overlay = 1;
 }
 
 message ClientBound {

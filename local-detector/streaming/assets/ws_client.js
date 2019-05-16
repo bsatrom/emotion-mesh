@@ -38,6 +38,24 @@ function createPlayer(width, height, streamControl) {
   return player
 }
 
+function captureFrame() {
+  protobuf.load("messages.proto", function(err, root) {
+    var ServerBound = root.lookupType("ServerBound");
+    var socket = new WebSocket("ws://" + window.location.host + "/stream");
+    
+    socket.binaryType = "arraybuffer";
+
+    socket.onopen = function(event) {
+      console.log("Socket connected for image capture.");
+      serverBound = ServerBound.create({frameCapture: {overlay:false}});
+
+      console.log(serverBound);
+
+      socket.send(ServerBound.encode(serverBound).finish());
+    };
+  });
+}
+
 window.onload = function() {
   protobuf.load("messages.proto", function(err, root) {
     if (err)

@@ -54,6 +54,13 @@ def OverlayMessage(svg):
 def _parse_server_message(data):
     message = pb2.ServerBound()
     message.ParseFromString(data)
+    
+    return message
+
+def _parse_image_capture(data):
+    message = pb2.FrameCapture()
+    message.ParseFromString(data)
+
     return message
 
 def _shutdown(sock):
@@ -289,7 +296,10 @@ class StreamingServer:
             if self._clients.remove(client):
                 client.stop()
             logger.info('Number of active clients: %d', len(self._clients))
-
+        elif command is ClientCommand.FRAME:
+            self._camera.capture_frame()
+            logger.info('Frame captured')
+        
         is_streaming = bool(self._enabled_clients)
 
         if not was_streaming and is_streaming:
@@ -365,6 +375,7 @@ class ClientCommand(Enum):
     STOP = 1
     ENABLE = 2
     DISABLE = 3
+    FRAME = 4
 
 class Client:
     def __init__(self, name, sock, command_queue):
@@ -489,6 +500,16 @@ class ProtoClient(Client):
         which = message.WhichOneof('message')
         if which == 'stream_control':
             self._handle_stream_control(message.stream_control)
+        elif which == 'frame_capture':
+            self._handle_frame_capture(message.frame_capture)
+    
+    def _handle_frame_capture(self, frame_capture):
+        overlay = frame_capture.overlay
+        self._logger.info('frame_capture with overlay %s', overlay)
+
+        with self._lock:
+            self._logger.info('Capturing Frame')
+            self._send_command(ClientCommand.FRAME)
 
     def _handle_stream_control(self, stream_control):
         enabled = stream_control.enabled
@@ -518,6 +539,7 @@ class ProtoClient(Client):
 
     def _receive_message(self):
         buf = self._receive_bytes(4)
+        
         if not buf:
             return None
         num_bytes = struct.unpack('!I', buf)[0]
@@ -582,6 +604,7 @@ class WsProtoClient(ProtoClient):
             packets = []
             while True:
                 packet = self._receive_packet()
+        
                 if packet.opcode == 0:
                     # Continuation
                     if not packets:

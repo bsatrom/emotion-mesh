@@ -1,17 +1,52 @@
 <!doctype html>
 <html>
+
 <head>
   <title>Coral Web Panel</title>
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon.png" />
+  <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+  <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css">
   <link rel="stylesheet" type="text/css" href="coral.css">
+  <link rel="stylesheet" type="text/css" href="particle.css">
   <script type="text/javascript" src="protobuf.min.js"></script>
   <script type="text/javascript" src="broadway/YUVCanvas.js"></script>
   <script type="text/javascript" src="broadway/Decoder.js"></script>
   <script type="text/javascript" src="broadway/Player.js"></script>
   <script type="text/javascript" src="ws_client.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
 </head>
+
 <body>
-  <img src="coral_logo.png" width="100em" style="padding-bottom:10px"/>
+  <header>
+    <img src="spark.png" />
+    <h1> Emotion Mesh
+    </h1>
+  </header>
+  <div id="app">
+    <b-button v-on:click="captureImage" type="is-info">Capture Image</b-button>
+    <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>
+  </div>
   <div id="container"></div>
+
 </body>
+
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+
+    },
+    methods: {
+      captureImage: function () {
+        window.captureFrame();
+      },
+      reset: function () {
+        console.log('foo');
+      }
+    }
+  })
+</script>
+
 </html>

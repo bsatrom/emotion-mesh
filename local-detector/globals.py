@@ -1,0 +1,1 @@
+capture_frame = False

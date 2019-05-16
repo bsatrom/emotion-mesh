@@ -1,0 +1,25 @@
+h1 {
+  font-family: 'Anton', sans-serif;
+  font-size: 4em;
+  display:table-cell; 
+  vertical-align:middle;
+  text-align: left;
+}
+
+img {
+  display: table-cell;
+  width: 100px;
+  padding-bottom:10px;
+}
+
+header {
+  height: 90%; 
+  text-align:center; 
+  display:table;
+  width:100%;
+}
+
+button {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
