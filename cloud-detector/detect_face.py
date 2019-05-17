@@ -43,8 +43,7 @@ def perform_cloud_detection(image):
     image_base_path = 'cloud-detector/images/'
     image_name = os.path.splitext(image)[0]
     image_path = image_base_path + image
-    print('PATH:' + image_path)
-
+    
     CF.Key.set(subscription_key)
     CF.BaseUrl.set(face_api_url)
 
