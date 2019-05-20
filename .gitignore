@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+fer2013/
+
 config.py
 
 # C extensions
