@@ -64,7 +64,7 @@ num_classes = 7
 patience = 50
 base_path = 'models/'
 l2_regularization = 0.01
-dropout = 0.3
+dropout = 0.1
 
 # data generator
 data_generator = ImageDataGenerator(
