@@ -6,8 +6,19 @@
  * Date:
  */
 
-void setup() {
+int sendSerial(String args)
+{
+  Serial1.println("capture");
+  return 1;
 }
 
-void loop() {
+void setup()
+{
+  Serial1.begin(9600);
+
+  Particle.function("sendSerial", sendSerial);
+}
+
+void loop()
+{
 }

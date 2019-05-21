@@ -73,3 +73,9 @@ The local dashboard view of the Emotion Mesh project shows the following metrics
 - % of each emotion detected
 - Time to local result vs. time to cloud result (incl. latency)
 - Variance between local face detection results and cloud results
+
+
+## DEMO Config Notes
+
+1. Coral local detector saves images to an SD Card. Script assumes a mount named `/disk1` which needs to be [remounted on startup](https://www.cyberciti.biz/faq/linux-disk-format/) with `mount /dev/mmcblk1 /disk1`
+2. Coral UART communication between Coral and Argon uses UART1, which is [shared with the linux serial console](https://coral.withgoogle.com/docs/dev-board/gpio/) and must be disabled with `systemctl stop serial-getty@ttymxc0.service`
