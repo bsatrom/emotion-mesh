@@ -10,10 +10,12 @@ import svg
 
 EMPTY_SVG = str(svg.Svg())
 
+
 def run_server(add_render_gen_args, render_gen):
     logging.basicConfig(level=logging.INFO)
 
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--source',
                         help='/dev/videoN:FMT:WxH:N/D or .mp4 file or image file',
                         default='/dev/video1:YUY2:800x600:24/1')
@@ -39,7 +41,8 @@ def run_server(add_render_gen_args, render_gen):
 
 
 def run_app(add_render_gen_args, render_gen):
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--source',
                         help='/dev/videoN:FMT:WxH:N/D or .mp4 file or image file',
                         default='/dev/video1:YUY2:800x600:24/1')
