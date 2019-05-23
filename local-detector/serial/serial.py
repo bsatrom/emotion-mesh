@@ -13,7 +13,7 @@ sys.path.insert(0, '/home/mendel/emotion-mesh/local-detector/streaming')
 import proto.messages_pb2 as messages_pb2
 
 # UART 1 on the Coral
-serial = Serial("/dev/ttymxc0", 9600, databits=8, parity='none', stopbits=1)
+serial = Serial("/dev/ttymxc0", 115200)
 
 def signal_handler(signal, frame):
     print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
@@ -33,7 +33,12 @@ def capture_image():
   print('Socket open, sending capture command...')
   
   ws.send_binary(message.SerializeToString())
-  print('Message sent. Closing socket...')
+  print('Message sent...')
+  sleep(1)
+  print('Sending response to controller...')
+  serial.write(b'1\n')
+  serial.flush()
+  print('Closing socket...')
   ws.close()
 
 
