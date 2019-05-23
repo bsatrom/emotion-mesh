@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.regularizers import l2
+from tensorflow.keras.utils import plot_model
 
 import pandas as pd
 import numpy as np
@@ -10,6 +11,8 @@ from sklearn.model_selection import train_test_split
 
 import os
 import matplotlib.pyplot as plt
+
+# os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
 # Load CSV Data
 facesCsv = pd.read_csv("fer2013/fer2013.csv")
@@ -42,7 +45,7 @@ def preprocess_input(x, v2=True):
     x = x / 255.0
     if v2:
         x = x - 0.5
-        x = x * 2.0
+        x = x * 2.0   
     return x
 
 
@@ -57,7 +60,7 @@ print("TEST Len: " + str(len(xtest)))
 
 # parameters
 batch_size = 32
-num_epochs = 110
+num_epochs = 150
 input_shape = (48, 48, 1)
 verbose = 1
 num_classes = 7
@@ -163,7 +166,8 @@ outputs = tf.keras.layers.Activation('softmax', name='predictions')(x)
 model = tf.keras.models.Model(inputs, outputs)
 model.compile(optimizer='adam', loss='categorical_crossentropy',
               metrics=['accuracy'])
-model.summary()
+model.summary() 
+plot_model(model, to_file='results/model_architecture.png', show_shapes=True, show_layer_names=True)
 
 # callbacks
 log_file_path = base_path + '_emotion_training.log'
