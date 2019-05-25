@@ -45,7 +45,7 @@ def preprocess_input(x, v2=True):
     x = x / 255.0
     if v2:
         x = x - 0.5
-        x = x * 2.0   
+        x = x * 2.0
     return x
 
 
@@ -60,7 +60,7 @@ print("TEST Len: " + str(len(xtest)))
 
 # parameters
 batch_size = 32
-num_epochs = 150
+num_epochs = 110
 input_shape = (48, 48, 1)
 verbose = 1
 num_classes = 7
@@ -166,8 +166,11 @@ outputs = tf.keras.layers.Activation('softmax', name='predictions')(x)
 model = tf.keras.models.Model(inputs, outputs)
 model.compile(optimizer='adam', loss='categorical_crossentropy',
               metrics=['accuracy'])
-model.summary() 
-plot_model(model, to_file='results/model_architecture.png', show_shapes=True, show_layer_names=True)
+model.summary()
+
+# Uncomment to generate a visual representation of the model.
+# You must have graphviz installed for this to work
+# plot_model(model, to_file='results/model_architecture.png', show_shapes=True, show_layer_names=True)
 
 # callbacks
 log_file_path = base_path + '_emotion_training.log'

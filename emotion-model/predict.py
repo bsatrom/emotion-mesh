@@ -1,5 +1,6 @@
-from keras.preprocessing.image import img_to_array
-from keras.models import load_model
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.models import load_model
 import imutils
 import cv2
 import numpy as np
@@ -8,7 +9,7 @@ import time
 
 # parameters for loading data and images
 detection_model_path = 'haarcascade_files/haarcascade_frontalface_default.xml'
-emotion_model_path = 'models/_mini_XCEPTION.81-0.65.hdf5'
+emotion_model_path = 'models/_mini_XCEPTION.134-0.66.hdf5'
 img_path = 'sample/img-0000819455.png'
 
 # hyper-parameters for bounding boxes shape
@@ -41,7 +42,8 @@ if len(faces) > 0:
     cv2.rectangle(orig_frame, (fX, fY), (fX + fW, fY + fH), (0, 0, 255), 2)
 
 cv2.imshow('test_face', orig_frame)
-cv2.imwrite('sample/'+img_path.split('/')[-1], orig_frame)
+
+cv2.imwrite(img_path.split('.')[0]+'_prediction.png', orig_frame)
 
 if (cv2.waitKey(5000) == ord('q')):
     sys.exit("Thanks")
