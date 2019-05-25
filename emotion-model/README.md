@@ -60,6 +60,8 @@ data_generator = ImageDataGenerator(
 
 ## Building a TensorFlow Lite Model for Google Coral (or Equivalent SBC)
 
+To run this emotion model under TensorFlow Lite on an SBC like the Google Coral, you need to convert the Keras Hdf5 model to a `tflite` model. To do this, open the `tflite-convert.py` file and update the path on line 3 and output on line 4. Run `python3 tflite-convert.py` and a file with the `tflite` extension will be created in the `models` directory. This model file can be used to run inference in a TensorFlow Lite environment.
+
 ## Appendix. Model Architecture Overview
 
 ![](../emotion-model/results/model_architecture.png)
