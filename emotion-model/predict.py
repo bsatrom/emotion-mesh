@@ -7,6 +7,7 @@ import numpy as np
 import sys
 import time
 
+start = time.time()
 # parameters for loading data and images
 detection_model_path = 'haarcascade_files/haarcascade_frontalface_default.xml'
 emotion_model_path = 'models/_mini_XCEPTION.134-0.66.hdf5'
@@ -35,16 +36,25 @@ if len(faces) > 0:
     roi = img_to_array(roi)
     roi = np.expand_dims(roi, axis=0)
     preds = emotion_classifier.predict(roi)[0]
+
+    # print(EMOTIONS)
+    # print(preds)
+
     emotion_probability = np.max(preds)
     label = EMOTIONS[preds.argmax()]
     cv2.putText(orig_frame, label, (fX, fY - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
     cv2.rectangle(orig_frame, (fX, fY), (fX + fW, fY + fH), (0, 0, 255), 2)
 
-cv2.imshow('test_face', orig_frame)
+# Show the image on the screen
+#cv2.imshow('test_face', orig_frame)
 
 cv2.imwrite(img_path.split('.')[0]+'_prediction.png', orig_frame)
 
-if (cv2.waitKey(5000) == ord('q')):
-    sys.exit("Thanks")
-cv2.destroyAllWindows()
+# if (cv2.waitKey(5000) == ord('q')):
+#    sys.exit("Thanks")
+# cv2.destroyAllWindows()
+
+end = time.time()
+
+print("Execution Time: " + str(end-start))
