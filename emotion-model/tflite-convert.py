@@ -2,7 +2,7 @@ import tensorflow as tf
 
 print(tf.__version__)
 
-file = "models/_mini_XCEPTION.01-0.40-quantized"
+file = "models/_mini_XCEPTION.01-0.34-quantized"
 
 converter = tf.lite.TFLiteConverter.from_keras_model_file(
     file + ".hdf5")

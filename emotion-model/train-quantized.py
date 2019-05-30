@@ -60,7 +60,7 @@ print("TEST Len: " + str(len(xtest)))
 
 # parameters
 batch_size = 32
-num_epochs = 110
+num_epochs = 1  # 110
 input_shape = (48, 48, 1)
 verbose = 1
 num_classes = 7
@@ -169,6 +169,9 @@ model = tf.keras.models.Model(inputs, outputs)
 sess = tf.keras.backend.get_session()
 tf.contrib.quantize.create_training_graph(sess.graph)
 sess.run(tf.global_variables_initializer())
+
+# You can plot the quantize training graph on tensorboard
+tf.summary.FileWriter('models/tensorboard', graph=sess.graph)
 
 model.compile(optimizer='adam', loss='categorical_crossentropy',
               metrics=['accuracy'])
