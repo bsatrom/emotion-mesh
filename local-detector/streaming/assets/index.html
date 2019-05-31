@@ -27,8 +27,25 @@
   <div id="app">
     <b-button v-on:click="captureImage" type="is-info">Capture Image</b-button>
     <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>
+
+    <div id="container" v-show="captureMode"></div>
+    <div id="results" v-show="!captureMode">
+      <img :src=`emotion-files/${resultImage}` class="result-image" />
+    </div>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Emotion Mesh</strong> by <a href="https://twitter.com/brandonsatrom">Brandon Satrom</a>. Powered by <a
+            href="https://particle.io">Particle</a> and <a href="https://coral.withgoogle.com/">Google Coral</a> The
+          source
+          code is licensed
+          <a href="http://opensource.org/licenses/mit-license.php">MIT</a> and is available on GitHub at <a
+            href="https://github.com/bsatrom/emotion-mesh">https://github.com/bsatrom/emotion-mesh</a>.
+        </p>
+      </div>
+    </footer>
   </div>
-  <div id="container"></div>
 
 </body>
 
@@ -36,17 +53,20 @@
   var app = new Vue({
     el: '#app',
     data: {
-
+      captureMode: true,
+      resultImage: 'img-0160274347.png'
     },
     methods: {
       captureImage: function () {
         window.captureFrame();
+
+        this.captureMode = false;
       },
       reset: function () {
-        console.log('foo');
+        this.captureMode = true;
       }
     }
-  })
+  });
 </script>
 
 </html>

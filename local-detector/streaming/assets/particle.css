@@ -23,3 +23,16 @@ button {
   margin-bottom: 20px;
   font-size: 24px;
 }
+
+#container {
+  width: 800px;
+  height: 800px;
+}
+
+.footer {
+  margin-top: 50px;
+}
+
+.result-image {
+  width: 800px;
+}

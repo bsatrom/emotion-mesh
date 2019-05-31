@@ -302,24 +302,37 @@ class StreamingServer:
         elif command is ClientCommand.FRAME:
             captured_frame = self._camera.capture_frame()
             logger.info('Frame captured: ' + captured_frame)
+            
             # Copy photo into cloud-detector folder
             cloud_path = '/home/mendel/emotion-mesh/cloud-detector/images/'
             copyfile(captured_frame, cloud_path + captured_frame)
             time.sleep(.500)
+            
             # Move photo into local-detector folder
             local_path = '/home/mendel/emotion-mesh/local-detector/images/'
             os.rename(captured_frame, local_path + captured_frame)
+            
             # Call cloud detector
-            perform_cloud_detection(captured_frame)
+            faceDictionary = perform_cloud_detection(captured_frame)
+            
             # Call local detector
-            # Move cloud and local photos into streaming/assets folder
+            # TODO: This requires some additional work and a TF2.0 port of an existing emotion model to work
+            
+            root_mod_file = os.path.splitext(captured_frame)[0] + '_modified.png'
+            # Move modified photo into streaming/assets folder
+            assets_path = '/home/mendel/emotion-mesh/local-detector/streaming/assets/emotion-files/'
+            copyfile(cloud_path + root_mod_file, assets_path + captured_frame)
+            
             # Call back to client with results image and details
+            # FIRE Socket Message with name of image and the emotion model results
+            # call_client(root_mod_file, faceDictionary)
+
             # Move original and results files to SD Card
             logger.info('Processing complete. Moving images to SD and performing cleanup.')
             sd_path = '/disk1/images/'
-            root_mod_file = os.path.splitext(captured_frame)[0] + '_modified.png'
             move(cloud_path + captured_frame, sd_path)
             move(cloud_path + root_mod_file, sd_path)
+            
             # Cleanup the local file
             os.remove(local_path + captured_frame)
             logger.info('Cleanup complete!')

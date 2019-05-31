@@ -55,6 +55,7 @@ def perform_cloud_detection(image):
     img = Image.open(image_path)
 
     # For each face returned use the face rectangle and draw a red box.
+    emotions = []
     draw = ImageDraw.Draw(img)
     for face in faces:
         # draw a rectangle on each face
@@ -62,6 +63,9 @@ def perform_cloud_detection(image):
         # write the predominant emotion over the bounding box
         draw.text(getCoordsForText(face), getMainEmotion(
             face), fill=(255, 255, 255, 255))
+        emotions.append(face['faceAttributes']['emotion'])
 
     # Display the image in the users default image browser.
     img.save(image_base_path + image_name + "_modified.png", "PNG")
+
+    return emotions
