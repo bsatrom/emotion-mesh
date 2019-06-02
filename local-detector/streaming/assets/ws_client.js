@@ -84,7 +84,7 @@ window.onload = function() {
 
     socket.onmessage = function(event) {
       var clientBound = ClientBound.decode(new Uint8Array(event.data))
-      console.log("MSG: ", clientBound.message)
+      window.console.log("MSG: ", clientBound.message)
       switch (clientBound.message) {
         case 'start':
           console.log('Starting...')
@@ -110,6 +110,9 @@ window.onload = function() {
           break;
         case 'stop':
           console.log("Stopped.");
+          break;
+        case 'result':
+          console.log('RESULT');
           break;
       }
     };

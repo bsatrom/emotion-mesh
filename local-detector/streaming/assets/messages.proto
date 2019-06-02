@@ -21,6 +21,7 @@ message ClientBound {
     Stop stop = 2;
     Video video = 3;
     Overlay overlay = 4;
+    DetectionResult detectionResult = 5;
   }
   uint64 timestamp_us = 10;
 }
@@ -39,4 +40,9 @@ message Video {
 
 message Overlay {
   string svg = 1;
+}
+
+message DetectionResult {
+  string imagePath = 1;
+  string emotionResult = 2;
 }

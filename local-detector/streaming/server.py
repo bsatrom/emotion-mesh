@@ -300,6 +300,7 @@ class StreamingServer:
                 client.stop()
             logger.info('Number of active clients: %d', len(self._clients))
         elif command is ClientCommand.FRAME:
+            # self._enabled_clients.remove(client)
             captured_frame = self._camera.capture_frame()
             logger.info('Frame captured: ' + captured_frame)
             
@@ -326,6 +327,7 @@ class StreamingServer:
             # Call back to client with results image and details
             # FIRE Socket Message with name of image and the emotion model results
             # call_client(root_mod_file, faceDictionary)
+            self._send_message('result')
 
             # Move original and results files to SD Card
             logger.info('Processing complete. Moving images to SD and performing cleanup.')
