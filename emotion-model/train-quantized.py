@@ -198,6 +198,15 @@ history = model.fit_generator(data_generator.flow(xtrain, ytrain, batch_size),
                               epochs=num_epochs, verbose=1, callbacks=callbacks,
                               validation_data=(xtest, ytest))
 
+
+# Save the checkpoint and eval graph proto to disk for freezing
+# and providing to TFLite.
+# with open(eval_graph_file, ‘w’) as f:
+#  f.write(str(sess.graph.as_graph_def()))
+
+#saver = tf.train.Saver()
+#saver.save(sess, checkpoint_name)
+
 # Print the min max in fakequant
 for node in sess.graph.as_graph_def().node:
     if 'weights_quant/AssignMaxLast' in node.name \
