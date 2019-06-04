@@ -54,6 +54,10 @@ def OverlayMessage(svg):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
                            overlay=pb2.Overlay(svg=svg))
 
+def DetectionResultMessage(imagePath, emotionResult):
+    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
+                           detectionResult=pb2.DetectionResult(imagePath=imagePath, emotionResult=emotionResult))
+
 def _parse_server_message(data):
     message = pb2.ServerBound()
     message.ParseFromString(data)
@@ -324,11 +328,11 @@ class StreamingServer:
             assets_path = '/home/mendel/emotion-mesh/local-detector/streaming/assets/emotion-files/'
             copyfile(cloud_path + root_mod_file, assets_path + captured_frame)
             
-            # Call back to client with results image and details
-            # FIRE Socket Message with name of image and the emotion model results
-            # call_client(root_mod_file, faceDictionary)
-            self._send_message('result')
-
+            # Call back to client with results image and emotion model result
+            # Use self._enabled_clients to send a message to the web client
+            for cl in self._enabled_clients:
+                cl.send_detection_result(os.path.splitext(captured_frame)[0] + '.png', str(faceDictionary))
+            
             # Move original and results files to SD Card
             logger.info('Processing complete. Moving images to SD and performing cleanup.')
             sd_path = '/disk1/images/'
@@ -462,6 +466,12 @@ class Client:
             if self._state != ClientState.DISABLED:
                 self._queue_overlay(svg)
 
+    def send_detection_result(self, imagePath, emotionResult):
+        """Can be called by any user thread."""
+        with self._lock:
+            if self._state != ClientState.DISABLED:
+                self._queue_detection_result(imagePath, emotionResult)
+            
     def _send_command(self, command):
         self._commands.put((self, command))
 
@@ -534,6 +544,9 @@ class ProtoClient(Client):
 
     def _queue_overlay(self, svg):
         return self._queue_message(OverlayMessage(svg))
+
+    def _queue_detection_result(self, imagePath, emotionResult):
+        return self._queue_message(DetectionResultMessage(imagePath, emotionResult))
 
     def _handle_message(self, message):
         which = message.WhichOneof('message')

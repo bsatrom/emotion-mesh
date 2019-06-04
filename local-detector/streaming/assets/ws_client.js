@@ -62,7 +62,7 @@ window.onload = function() {
       throw err;
 
     var ClientBound = root.lookupType("ClientBound");
-    var ServerBound = root.lookupType("ServerBound")
+    var ServerBound = root.lookupType("ServerBound");
 
     function streamControl(enabled) {
         serverBound = ServerBound.create({streamControl: {enabled:enabled}});
@@ -82,9 +82,12 @@ window.onload = function() {
       console.log("Socket closed.");
     };
 
+    socket.onerror = function(err) {
+      console.log("Socket error: ", err);
+    }
+
     socket.onmessage = function(event) {
       var clientBound = ClientBound.decode(new Uint8Array(event.data))
-      window.console.log("MSG: ", clientBound.message)
       switch (clientBound.message) {
         case 'start':
           console.log('Starting...')
@@ -111,8 +114,13 @@ window.onload = function() {
         case 'stop':
           console.log("Stopped.");
           break;
-        case 'result':
-          console.log('RESULT');
+        case 'detectionResult':
+          // Update state with image path and detection result
+          data = window.app.$data;
+          
+          data.resultImage = clientBound.detectionResult.imagePath;
+          data.emotionResult = JSON.parse(clientBound.detectionResult.emotionResult.replace(/'/g,'"'));
+          data.captureMode = false;
           break;
       }
     };

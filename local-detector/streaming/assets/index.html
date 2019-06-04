@@ -29,7 +29,7 @@
     <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>
 
     <div id="container" v-show="captureMode"></div>
-    <div id="results" v-show="!captureMode">
+    <div id="results" v-show="!captureMode && resultImage.length > 0">
       <img :src=`emotion-files/${resultImage}` class="result-image" />
     </div>
 
@@ -54,7 +54,8 @@
     el: '#app',
     data: {
       captureMode: true,
-      resultImage: 'img-0160274347.png'
+      resultImage: '',
+      emotionResult: []
     },
     methods: {
       captureImage: function () {
