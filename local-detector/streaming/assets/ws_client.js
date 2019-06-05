@@ -114,6 +114,16 @@ window.onload = function() {
         case 'stop':
           console.log("Stopped.");
           break;
+        case 'processing':
+          data = window.app.$data;
+          data.isProcessing = true;  
+          window.app.$notification.open({
+            hasIcon: true,
+            message: 'Performing inference...',
+            type: 'is-info'
+          });
+
+          break;
         case 'detectionResult':
           // Update state with image path and detection result
           data = window.app.$data;
@@ -125,17 +135,34 @@ window.onload = function() {
           });
 
           let emotionData = JSON.parse(clientBound.detectionResult.emotionResult.replace(/'/g,'"'));
-          const emotionKeys = Object.keys(emotionData[0]).sort();
-          let emotionVals = [];
-          for (let i = 0; i < emotionKeys.length; i++) {
-            emotionVals.push(emotionData[0][emotionKeys[i]]);
+          
+          if (emotionData) {
+            const emotionKeys = Object.keys(emotionData[0]).sort();
+            let emotionVals = [];
+            for (let i = 0; i < emotionKeys.length; i++) {
+              emotionVals.push(emotionData[0][emotionKeys[i]]);
+            }
+            
+            window.app.showResultChart(emotionVals);
+            
+            data.isProcessing = false;
+            data.resultImage = clientBound.detectionResult.imagePath;
+            data.emotionResult = emotionData;
+            data.captureMode = false;
+          } else {
+            window.app.$notification.open({
+              duration: 5000,
+              hasIcon: true,
+              message: 'Unable to find face. Please try again...',
+              type: 'is-error'
+            });
+            window.app.reset();
           }
-          
-          window.app.showResultChart(emotionVals);
-          
-          data.resultImage = clientBound.detectionResult.imagePath;
-          data.emotionResult = emotionData;
-          data.captureMode = false;
+          break;
+        case 'response':
+          data = window.app.$data;
+          data.inferenceResponse = true;
+          data.inferenceCorrect = clientBound.response ? clientBound.response.correct : false;
           break;
         case 'reset':
           window.app.reset();

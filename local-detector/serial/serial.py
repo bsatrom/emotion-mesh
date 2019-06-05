@@ -7,6 +7,8 @@ from websocket import create_connection
 import socket
 
 sock_ip = "192.168.10.216:4664"
+print('Opening websocket connection to server...')
+ws = create_connection("ws://" + sock_ip + "/stream")
 
 # import protobuf
 sys.path.insert(0, '/home/mendel/emotion-mesh/local-detector/streaming')
@@ -18,6 +20,8 @@ serial = Serial("/dev/ttymxc2", 115200)
 def signal_handler(signal, frame):
     print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
     serial.close()
+    print('Closing socket...')
+    ws.close()
     exit(0)
 
 print('Waiting for a message from the Argon...')
@@ -25,12 +29,10 @@ print('Waiting for a message from the Argon...')
 signal.signal(signal.SIGINT, signal_handler)
 
 def capture_image():
-  print('Opening websocket connection to server...')
   message = messages_pb2.ServerBound()
   message.frame_capture.overlay = True
   
-  ws = create_connection("ws://" + sock_ip + "/stream")
-  print('Socket open, sending capture command...')
+  print('Sending capture command...')
   
   ws.send_binary(message.SerializeToString())
   print('Message sent...')
@@ -38,9 +40,17 @@ def capture_image():
   print('Sending response to controller...')
   serial.write(b'1\n')
   serial.flush()
-  print('Closing socket...')
-  ws.close()
 
+def send_reset():
+  message = messages_pb2.ServerBound(reset=messages_pb2.Reset())  
+  print('Resetting...')
+  ws.send_binary(message.SerializeToString())
+      
+def send_response(isCorrect):
+  message = messages_pb2.ServerBound()
+  message.response.correct = isCorrect
+  print('Sending inference response...')
+  ws.send_binary(message.SerializeToString())
 
 # wait for something from the Argon to trigger the demo
 while True:
@@ -52,9 +62,11 @@ while True:
     if (serial_message == 'capture'):
       capture_image()
     elif (serial_message == 'reset'):
-      print('Resetting...')
+      send_reset()
     elif (serial_message == 'yes'):
       print('Emotion inference was right!')
+      send_response(True)
     elif (serial_message == 'no'):
       print('Emotion inference was wrong!')
+      send_response(False)
     

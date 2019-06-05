@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
   <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
   <link rel="stylesheet" type="text/css" href="coral.css">
   <link rel="stylesheet" type="text/css" href="particle.css">
   <script type="text/javascript" src="protobuf.min.js"></script>
@@ -25,6 +26,10 @@
     </h1>
   </header>
   <div id="app">
+    <b-loading :is-full-page="isFullPage" :active.sync="isProcessing" :can-cancel="true">
+      <b-icon pack="fas" icon="sync-alt" size="is-large" custom-class="fa-spin">
+      </b-icon>
+    </b-loading>
     <b-button v-on:click="captureImage" type="is-info">Capture Image</b-button>
     <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>
 
@@ -61,8 +66,13 @@
       el: '#app',
       data: {
         captureMode: true,
+        isFullPage: true,
         resultImage: '',
-        emotionResult: []
+        emotionResult: [],
+        mainEmotion: '',
+        isProcessing: false,
+        inferenceResponse: false,
+        inferenceCorrect: false
       },
       methods: {
         captureImage: function () {
@@ -75,6 +85,8 @@
         },
         reset: function () {
           this.captureMode = true;
+          this.isProcessing = false;
+          this.inferenceResponse = false;
           this.resultImage = '';
           this.emotionResult = [];
         }

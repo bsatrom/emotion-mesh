@@ -54,9 +54,21 @@ def OverlayMessage(svg):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
                            overlay=pb2.Overlay(svg=svg))
 
+def ProcessingMessage():
+    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
+                           processing=pb2.Processing())
+
 def DetectionResultMessage(imagePath, emotionResult):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
                            detectionResult=pb2.DetectionResult(imagePath=imagePath, emotionResult=emotionResult))
+
+def ResetMessage():
+    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
+                           reset=pb2.Reset())
+
+def ResponseMessage(correct):
+    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
+                           response=pb2.Response(correct=correct))
 
 def _parse_server_message(data):
     message = pb2.ServerBound()
@@ -303,8 +315,23 @@ class StreamingServer:
             if self._clients.remove(client):
                 client.stop()
             logger.info('Number of active clients: %d', len(self._clients))
+        elif command is ClientCommand.RESET:
+            for cl in self._enabled_clients:
+                cl.send_reset_message()
+            logger.info('Reset command sent')
+        elif command is ClientCommand.YES:
+            for cl in self._enabled_clients:
+                cl.send_response_message(correct=True)
+            logger.info('Response sent')
+        elif command is ClientCommand.NO:
+            for cl in self._enabled_clients:
+                cl.send_response_message(correct=False)
+            logger.info('Response sent')
+
         elif command is ClientCommand.FRAME:
-            # self._enabled_clients.remove(client)
+            for cl in self._enabled_clients:
+                cl.send_processing_message()
+            
             captured_frame = self._camera.capture_frame()
             logger.info('Frame captured: ' + captured_frame)
             
@@ -387,7 +414,7 @@ class StreamingServer:
                         self._clients.add(client).start()
                         logger.info('Number of active clients: %d', len(self._clients))
         finally:
-            logger.info('Server is shutting down')
+            logger.info('Server is shutting own')
             if self._enabled_clients:
                 self._stop_recording()
 
@@ -419,6 +446,9 @@ class ClientCommand(Enum):
     ENABLE = 2
     DISABLE = 3
     FRAME = 4
+    RESET = 5
+    YES = 6
+    NO = 7
 
 class Client:
     def __init__(self, name, sock, command_queue):
@@ -465,6 +495,24 @@ class Client:
         with self._lock:
             if self._state != ClientState.DISABLED:
                 self._queue_overlay(svg)
+
+    def send_reset_message(self):
+        """Can be called by any user thread."""
+        with self._lock:
+            if self._state != ClientState.DISABLED:
+                self._queue_reset_message()
+
+    def send_processing_message(self):
+        """Can be called by any user thread."""
+        with self._lock:
+            if self._state != ClientState.DISABLED:
+                self._queue_processing_message()
+
+    def send_response_message(self, correct):
+        """Can be called by any user thread."""
+        with self._lock:
+            if self._state != ClientState.DISABLED:
+                self._queue_response_message(correct)
 
     def send_detection_result(self, imagePath, emotionResult):
         """Can be called by any user thread."""
@@ -545,8 +593,17 @@ class ProtoClient(Client):
     def _queue_overlay(self, svg):
         return self._queue_message(OverlayMessage(svg))
 
+    def _queue_reset_message(self):
+        return self._queue_message(ResetMessage())
+
     def _queue_detection_result(self, imagePath, emotionResult):
         return self._queue_message(DetectionResultMessage(imagePath, emotionResult))
+
+    def _queue_response_message(self, correct):
+        return self._queue_message(ResponseMessage(correct))
+
+    def _queue_processing_message(self):
+        return self._queue_message(ProcessingMessage())
 
     def _handle_message(self, message):
         which = message.WhichOneof('message')
@@ -554,6 +611,15 @@ class ProtoClient(Client):
             self._handle_stream_control(message.stream_control)
         elif which == 'frame_capture':
             self._handle_frame_capture(message.frame_capture)
+        elif which == 'reset':
+            self._logger.info('Resetting...')
+            self._send_command(ClientCommand.RESET)
+        elif which == 'response':
+            self._logger.info('Detection Correct: ' + str(message.response.correct))
+            if (message.response.correct):
+                self._send_command(ClientCommand.YES)
+            else:
+                self._send_command(ClientCommand.NO)
     
     def _handle_frame_capture(self, frame_capture):
         overlay = frame_capture.overlay
