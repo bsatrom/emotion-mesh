@@ -137,10 +137,11 @@ window.onload = function() {
           let emotionData = JSON.parse(clientBound.detectionResult.emotionResult.replace(/'/g,'"'));
           
           if (emotionData) {
-            const emotionKeys = Object.keys(emotionData[0]).sort();
+            emotionData = emotionData[0];
+            const emotionKeys = Object.keys(emotionData).sort();
             let emotionVals = [];
             for (let i = 0; i < emotionKeys.length; i++) {
-              emotionVals.push(emotionData[0][emotionKeys[i]]);
+              emotionVals.push(emotionData[emotionKeys[i]]);
             }
             
             window.app.showResultChart(emotionVals);
@@ -148,6 +149,15 @@ window.onload = function() {
             data.isProcessing = false;
             data.resultImage = clientBound.detectionResult.imagePath;
             data.emotionResult = emotionData;
+            // Capture main emotion
+            highestResult = Object.values(emotionData).sort((x, y) => y - x)[0];
+            Object.keys(emotionData).forEach((item) => {
+              if (emotionData[item] == highestResult) {
+                data.mainEmotion = item;
+              }
+            });
+            data.isAwaitingResponse = true;
+
             data.captureMode = false;
           } else {
             window.app.$notification.open({
@@ -163,6 +173,7 @@ window.onload = function() {
           data = window.app.$data;
           data.inferenceResponse = true;
           data.inferenceCorrect = clientBound.response ? clientBound.response.correct : false;
+          data.isAwaitingResponse = false;
           break;
         case 'reset':
           window.app.reset();

@@ -26,7 +26,7 @@ button {
 
 #container {
   width: 800px;
-  height: 800px;
+  height: 700px;
 }
 
 .footer {
@@ -43,6 +43,11 @@ button {
   height:40vh; 
   width:80vh;
   padding-top: 5%;
+}
+
+.messages {
+  width: 80%;
+  margin: 0 auto;
 }
 
 .results {

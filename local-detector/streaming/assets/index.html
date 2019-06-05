@@ -39,11 +39,23 @@
         <div class="results" v-show="!captureMode && resultImage !== ''">
           <img v-if="resultImage !== ''" :src=`emotion-files/${resultImage}` class="result-image" />
         </div>
-        <div class="chart" v-show="emotionResult.length > 0">
+        <div class="chart" v-show="!!emotionResult">
           <canvas id="resultChart"></canvas>
         </div>
       </div>
     </div>
+    <section class="messages">
+      <b-message v-show="!captureMode && !isAwaitingResponse" title="Ready to begin?" size="is-large" :closable="false"
+        type="is-info" has-icon>
+        Hit the <strong style="color: green;">green</strong> button to start the demo...
+      </b-message>
+      <b-message v-show="isAwaitingResponse" title="How did the machine do?" size="is-large" :closable="false"
+        type="is-warning" has-icon>
+        The machine predicted <strong>{{ mainEmotion }}</strong>. Is this correct? <br />
+        Hit the <strong style="color: green;">GREEN</strong> button if yes. <strong style="color: red;">RED</strong> if
+        no.
+      </b-message>
+    </section>
 
     <footer class="footer">
       <div class="content has-text-centered">
@@ -68,9 +80,10 @@
         captureMode: true,
         isFullPage: true,
         resultImage: '',
-        emotionResult: [],
+        emotionResult: null,
         mainEmotion: '',
         isProcessing: false,
+        isAwaitingResponse: false,
         inferenceResponse: false,
         inferenceCorrect: false
       },
@@ -87,8 +100,9 @@
           this.captureMode = true;
           this.isProcessing = false;
           this.inferenceResponse = false;
+          this.isAwaitingResponse = false;
           this.resultImage = '';
-          this.emotionResult = [];
+          this.emotionResult = null;
         }
       }
     });
