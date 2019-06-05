@@ -117,10 +117,28 @@ window.onload = function() {
         case 'detectionResult':
           // Update state with image path and detection result
           data = window.app.$data;
+          window.app.$notification.open({
+            duration: 5000,
+            hasIcon: true,
+            message: 'Image Processed!',
+            type: 'is-success'
+          });
+
+          let emotionData = JSON.parse(clientBound.detectionResult.emotionResult.replace(/'/g,'"'));
+          const emotionKeys = Object.keys(emotionData[0]).sort();
+          let emotionVals = [];
+          for (let i = 0; i < emotionKeys.length; i++) {
+            emotionVals.push(emotionData[0][emotionKeys[i]]);
+          }
+          
+          window.app.showResultChart(emotionVals);
           
           data.resultImage = clientBound.detectionResult.imagePath;
-          data.emotionResult = JSON.parse(clientBound.detectionResult.emotionResult.replace(/'/g,'"'));
+          data.emotionResult = emotionData;
           data.captureMode = false;
+          break;
+        case 'reset':
+          window.app.reset();
           break;
       }
     };

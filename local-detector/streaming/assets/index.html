@@ -16,9 +16,9 @@
   <script type="text/javascript" src="ws_client.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
-</head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <script src="./components/ResultChart.js"></script>
 
-<body>
   <header>
     <img src="spark.png" />
     <h1> Emotion Mesh
@@ -28,9 +28,16 @@
     <b-button v-on:click="captureImage" type="is-info">Capture Image</b-button>
     <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>
 
-    <div id="container" v-show="captureMode"></div>
-    <div id="results" v-show="!captureMode && resultImage.length > 0">
-      <img :src=`emotion-files/${resultImage}` class="result-image" />
+    <div class="media">
+      <div id="container" v-show="captureMode"></div>
+      <div class="resultsContainer">
+        <div class="results" v-show="!captureMode && resultImage !== ''">
+          <img v-if="resultImage !== ''" :src=`emotion-files/${resultImage}` class="result-image" />
+        </div>
+        <div class="chart" v-show="emotionResult.length > 0">
+          <canvas id="resultChart"></canvas>
+        </div>
+      </div>
     </div>
 
     <footer class="footer">
@@ -47,27 +54,32 @@
     </footer>
   </div>
 
-</body>
+  </body>
 
-<script>
-  var app = new Vue({
-    el: '#app',
-    data: {
-      captureMode: true,
-      resultImage: '',
-      emotionResult: []
-    },
-    methods: {
-      captureImage: function () {
-        window.captureFrame();
-
-        this.captureMode = false;
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        captureMode: true,
+        resultImage: '',
+        emotionResult: []
       },
-      reset: function () {
-        this.captureMode = true;
+      methods: {
+        captureImage: function () {
+          window.captureFrame();
+
+          this.captureMode = false;
+        },
+        showResultChart: function (data) {
+          initResultChart(data);
+        },
+        reset: function () {
+          this.captureMode = true;
+          this.resultImage = '';
+          this.emotionResult = [];
+        }
       }
-    }
-  });
-</script>
+    });
+  </script>
 
 </html>

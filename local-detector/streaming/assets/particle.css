@@ -30,9 +30,31 @@ button {
 }
 
 .footer {
-  margin-top: 50px;
+  margin-top: 60px;
+}
+
+.resultsContainer {
+  width: 100%;
+}
+
+.chart {
+  position: relative; 
+  display: inline-block;
+  height:40vh; 
+  width:80vh;
+  padding-top: 5%;
+}
+
+.results {
+  float: left;
 }
 
 .result-image {
   width: 800px;
+}
+
+#resultChart {
+  width: 45%;
+  display: inline-block;
+  float: right;
 }
