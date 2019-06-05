@@ -4,7 +4,8 @@ message ServerBound {
   oneof message {
     StreamControl stream_control = 1;
     FrameCapture frame_capture = 2;
-    Response response = 3;
+    Reset reset = 3;
+    Response response = 4;
   }
 }
 
