@@ -62,7 +62,7 @@ window.onload = function() {
       throw err;
 
     var ClientBound = root.lookupType("ClientBound");
-    var ServerBound = root.lookupType("ServerBound")
+    var ServerBound = root.lookupType("ServerBound");
 
     function streamControl(enabled) {
         serverBound = ServerBound.create({streamControl: {enabled:enabled}});
@@ -81,6 +81,10 @@ window.onload = function() {
     socket.onclose = function(event) {
       console.log("Socket closed.");
     };
+
+    socket.onerror = function(err) {
+      console.log("Socket error: ", err);
+    }
 
     socket.onmessage = function(event) {
       var clientBound = ClientBound.decode(new Uint8Array(event.data))
@@ -109,6 +113,87 @@ window.onload = function() {
           break;
         case 'stop':
           console.log("Stopped.");
+          break;
+        case 'processing':
+          data = window.app.$data;
+          data.isProcessing = true;  
+          window.app.$notification.open({
+            hasIcon: true,
+            message: 'Performing inference...',
+            type: 'is-info'
+          });
+
+          break;
+        case 'detectionResult':
+          // Update state with image path and detection result
+          data = window.app.$data;
+          window.app.$notification.open({
+            duration: 3000,
+            hasIcon: true,
+            message: 'Image Processed!',
+            type: 'is-success'
+          });
+
+          let emotionData = JSON.parse(clientBound.detectionResult.emotionResult.replace(/'/g,'"'));
+          
+          if (emotionData[0]) {
+            emotionData = emotionData[0];
+            const emotionKeys = Object.keys(emotionData).sort();
+            let emotionVals = [];
+            for (let i = 0; i < emotionKeys.length; i++) {
+              emotionVals.push(emotionData[emotionKeys[i]]);
+            }
+            
+            window.app.showResultChart(emotionVals);
+            
+            data.isProcessing = false;
+            data.resultImage = clientBound.detectionResult.imagePath;
+            data.emotionResult = emotionData;
+            // Capture main emotion
+            highestResult = Object.values(emotionData).sort((x, y) => y - x)[0];
+            Object.keys(emotionData).forEach((item) => {
+              if (emotionData[item] == highestResult) {
+                data.mainEmotion = item;
+              }
+            });
+            data.isAwaitingResponse = true;
+
+            data.captureMode = false;
+          } else {
+            window.app.$notification.open({
+              duration: 5000,
+              hasIcon: true,
+              message: 'Unable to find face. Please try again...',
+              type: 'is-error'
+            });
+            window.app.reset();
+          }
+          break;
+        case 'response':
+          let msg, type = null;
+          data = window.app.$data;
+          data.inferenceResponse = true;
+          data.inferenceCorrect = clientBound.response ? clientBound.response.correct : false;
+          data.isAwaitingResponse = false;
+          if (data.inferenceCorrect) {
+            msg = 'Inference was correct!'
+            type = 'is-success';
+          } else {
+            msg = 'Inference was incorrect!'
+            type = 'is-danger';
+          }
+
+          window.app.$notification.open({
+            duration: 3000,
+            hasIcon: true,
+            message: msg,
+            type: type
+          });
+          data.lastInference = data.inferenceCorrect ? "Correct" : "Incorrect";
+
+          break;
+        case 'reset':
+          window.app.reset();
           break;
       }
     };

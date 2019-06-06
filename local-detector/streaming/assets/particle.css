@@ -23,3 +23,51 @@ button {
   margin-bottom: 20px;
   font-size: 24px;
 }
+
+#container {
+  width: 800px;
+  height: 700px;
+}
+
+.footer {
+  margin-top: 60px;
+}
+
+.resultsContainer {
+  width: 100%;
+}
+
+.chart {
+  position: relative; 
+  display: inline-block;
+  height:40vh; 
+  width:80vh;
+  padding-top: 5%;
+}
+
+.heading {
+  font-size: 26px;
+}
+
+.title {
+  font-size: 60px;
+}
+
+.messages {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.results {
+  float: left;
+}
+
+.result-image {
+  width: 800px;
+}
+
+#resultChart {
+  width: 45%;
+  display: inline-block;
+  float: right;
+}

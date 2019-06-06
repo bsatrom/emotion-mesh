@@ -4,6 +4,8 @@ message ServerBound {
   oneof message {
     StreamControl stream_control = 1;
     FrameCapture frame_capture = 2;
+    Reset reset = 3;
+    Response response = 4;
   }
 }
 
@@ -21,6 +23,10 @@ message ClientBound {
     Stop stop = 2;
     Video video = 3;
     Overlay overlay = 4;
+    DetectionResult detectionResult = 5;
+    Reset reset = 6;
+    Processing processing = 7;
+    Response response = 8;
   }
   uint64 timestamp_us = 10;
 }
@@ -39,4 +45,19 @@ message Video {
 
 message Overlay {
   string svg = 1;
+}
+
+message DetectionResult {
+  string imagePath = 1;
+  string emotionResult = 2;
+}
+
+message Reset {
+}
+
+message Processing {
+}
+
+message Response {
+  bool correct = 1;
 }

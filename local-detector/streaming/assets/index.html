@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
   <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
   <link rel="stylesheet" type="text/css" href="coral.css">
   <link rel="stylesheet" type="text/css" href="particle.css">
   <script type="text/javascript" src="protobuf.min.js"></script>
@@ -16,37 +17,105 @@
   <script type="text/javascript" src="ws_client.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
-</head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <script src="./components/ResultChart.js"></script>
 
-<body>
   <header>
     <img src="spark.png" />
     <h1> Emotion Mesh
     </h1>
   </header>
   <div id="app">
-    <b-button v-on:click="captureImage" type="is-info">Capture Image</b-button>
-    <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>
+    <b-loading :is-full-page="isFullPage" :active.sync="isProcessing" :can-cancel="true">
+      <b-icon pack="fas" icon="sync-alt" size="is-large" custom-class="fa-spin">
+      </b-icon>
+    </b-loading>
+    <div class="level-item has-text-centered" v-show="lastInference">
+      <div>
+        <p class="heading">Last Inference</p>
+        <p class="title"><strong>{{ lastInference }}</strong></p>
+      </div>
+    </div>
+    <!--<b-button v-on:click="captureImage" type="is-info">Capture Image</b-button>
+    <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>-->
+
+    <div class="media">
+      <div id="container" v-show="captureMode"></div>
+      <div class="resultsContainer">
+        <div class="results" v-show="!captureMode && resultImage !== ''">
+          <img v-if="resultImage !== ''" :src=`emotion-files/${resultImage}` class="result-image" />
+        </div>
+        <div class="chart" v-show="!!emotionResult">
+          <canvas id="resultChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <section class="messages">
+      <b-message v-if="!captureMode && !isAwaitingResponse" title="Ready to begin?" size="is-large" :closable="false"
+        type="is-info" has-icon>
+        Hit the <strong style="color: green;">GREEN</strong> button to start the demo...
+      </b-message>
+      <b-message v-if="captureMode" title="Say Cheese!" size="is-large" :closable="false" type="is-success" has-icon>
+        Hit the <strong style="color: green;">GREEN</strong> button to take a photo.
+      </b-message>
+      <b-message v-if="isAwaitingResponse" title="How did the machine do?" size="is-large" :closable="false"
+        type="is-warning" has-icon>
+        The machine predicted <strong>{{ mainEmotion }}</strong>. Is this correct? <br />
+        Hit the <strong style="color: green;">GREEN</strong> button if yes. <strong style="color: red;">RED</strong> if
+        no.
+      </b-message>
+    </section>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Emotion Mesh</strong> by <a href="https://twitter.com/brandonsatrom">Brandon Satrom</a>. Powered by <a
+            href="https://particle.io">Particle</a> and <a href="https://coral.withgoogle.com/">Google Coral</a> The
+          source
+          code is licensed
+          <a href="http://opensource.org/licenses/mit-license.php">MIT</a> and is available on GitHub at <a
+            href="https://github.com/bsatrom/emotion-mesh">https://github.com/bsatrom/emotion-mesh</a>.
+        </p>
+      </div>
+    </footer>
   </div>
-  <div id="container"></div>
 
-</body>
+  </body>
 
-<script>
-  var app = new Vue({
-    el: '#app',
-    data: {
-
-    },
-    methods: {
-      captureImage: function () {
-        window.captureFrame();
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        captureMode: true,
+        isFullPage: true,
+        resultImage: '',
+        emotionResult: null,
+        lastInference: null,
+        mainEmotion: '',
+        isProcessing: false,
+        isAwaitingResponse: false,
+        inferenceResponse: false,
+        inferenceCorrect: false
       },
-      reset: function () {
-        console.log('foo');
+      methods: {
+        captureImage: function () {
+          window.captureFrame();
+
+          this.captureMode = false;
+        },
+        showResultChart: function (data) {
+          initResultChart(data);
+        },
+        reset: function () {
+          this.captureMode = true;
+          this.isProcessing = false;
+          this.inferenceResponse = false;
+          this.isAwaitingResponse = false;
+          this.resultImage = '';
+          this.emotionResult = null;
+        }
       }
-    }
-  })
-</script>
+    });
+  </script>
 
 </html>

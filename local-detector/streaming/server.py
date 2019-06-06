@@ -54,6 +54,22 @@ def OverlayMessage(svg):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
                            overlay=pb2.Overlay(svg=svg))
 
+def ProcessingMessage():
+    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
+                           processing=pb2.Processing())
+
+def DetectionResultMessage(imagePath, emotionResult):
+    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
+                           detectionResult=pb2.DetectionResult(imagePath=imagePath, emotionResult=emotionResult))
+
+def ResetMessage():
+    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
+                           reset=pb2.Reset())
+
+def ResponseMessage(correct):
+    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
+                           response=pb2.Response(correct=correct))
+
 def _parse_server_message(data):
     message = pb2.ServerBound()
     message.ParseFromString(data)
@@ -299,27 +315,57 @@ class StreamingServer:
             if self._clients.remove(client):
                 client.stop()
             logger.info('Number of active clients: %d', len(self._clients))
+        elif command is ClientCommand.RESET:
+            for cl in self._enabled_clients:
+                cl.send_reset_message()
+            logger.info('Reset command sent')
+        elif command is ClientCommand.YES:
+            for cl in self._enabled_clients:
+                cl.send_response_message(correct=True)
+            logger.info('Response sent')
+        elif command is ClientCommand.NO:
+            for cl in self._enabled_clients:
+                cl.send_response_message(correct=False)
+            logger.info('Response sent')
+
         elif command is ClientCommand.FRAME:
+            for cl in self._enabled_clients:
+                cl.send_processing_message()
+            
             captured_frame = self._camera.capture_frame()
             logger.info('Frame captured: ' + captured_frame)
+            
             # Copy photo into cloud-detector folder
             cloud_path = '/home/mendel/emotion-mesh/cloud-detector/images/'
             copyfile(captured_frame, cloud_path + captured_frame)
             time.sleep(.500)
+            
             # Move photo into local-detector folder
             local_path = '/home/mendel/emotion-mesh/local-detector/images/'
             os.rename(captured_frame, local_path + captured_frame)
+            
             # Call cloud detector
-            perform_cloud_detection(captured_frame)
+            faceDictionary = perform_cloud_detection(captured_frame)
+            
             # Call local detector
-            # Move cloud and local photos into streaming/assets folder
-            # Call back to client with results image and details
+            # TODO: This requires some additional work and a TF2.0 port of an existing emotion model to work
+            
+            root_mod_file = os.path.splitext(captured_frame)[0] + '_modified.png'
+            # Move modified photo into streaming/assets folder
+            assets_path = '/home/mendel/emotion-mesh/local-detector/streaming/assets/emotion-files/'
+            copyfile(cloud_path + root_mod_file, assets_path + captured_frame)
+            
+            # Call back to client with results image and emotion model result
+            # Use self._enabled_clients to send a message to the web client
+            for cl in self._enabled_clients:
+                cl.send_detection_result(os.path.splitext(captured_frame)[0] + '.png', str(faceDictionary))
+            
             # Move original and results files to SD Card
             logger.info('Processing complete. Moving images to SD and performing cleanup.')
             sd_path = '/disk1/images/'
-            root_mod_file = os.path.splitext(captured_frame)[0] + '_modified.png'
             move(cloud_path + captured_frame, sd_path)
             move(cloud_path + root_mod_file, sd_path)
+            
             # Cleanup the local file
             os.remove(local_path + captured_frame)
             logger.info('Cleanup complete!')
@@ -368,7 +414,7 @@ class StreamingServer:
                         self._clients.add(client).start()
                         logger.info('Number of active clients: %d', len(self._clients))
         finally:
-            logger.info('Server is shutting down')
+            logger.info('Server is shutting own')
             if self._enabled_clients:
                 self._stop_recording()
 
@@ -400,6 +446,9 @@ class ClientCommand(Enum):
     ENABLE = 2
     DISABLE = 3
     FRAME = 4
+    RESET = 5
+    YES = 6
+    NO = 7
 
 class Client:
     def __init__(self, name, sock, command_queue):
@@ -447,6 +496,30 @@ class Client:
             if self._state != ClientState.DISABLED:
                 self._queue_overlay(svg)
 
+    def send_reset_message(self):
+        """Can be called by any user thread."""
+        with self._lock:
+            if self._state != ClientState.DISABLED:
+                self._queue_reset_message()
+
+    def send_processing_message(self):
+        """Can be called by any user thread."""
+        with self._lock:
+            if self._state != ClientState.DISABLED:
+                self._queue_processing_message()
+
+    def send_response_message(self, correct):
+        """Can be called by any user thread."""
+        with self._lock:
+            if self._state != ClientState.DISABLED:
+                self._queue_response_message(correct)
+
+    def send_detection_result(self, imagePath, emotionResult):
+        """Can be called by any user thread."""
+        with self._lock:
+            if self._state != ClientState.DISABLED:
+                self._queue_detection_result(imagePath, emotionResult)
+            
     def _send_command(self, command):
         self._commands.put((self, command))
 
@@ -520,12 +593,33 @@ class ProtoClient(Client):
     def _queue_overlay(self, svg):
         return self._queue_message(OverlayMessage(svg))
 
+    def _queue_reset_message(self):
+        return self._queue_message(ResetMessage())
+
+    def _queue_detection_result(self, imagePath, emotionResult):
+        return self._queue_message(DetectionResultMessage(imagePath, emotionResult))
+
+    def _queue_response_message(self, correct):
+        return self._queue_message(ResponseMessage(correct))
+
+    def _queue_processing_message(self):
+        return self._queue_message(ProcessingMessage())
+
     def _handle_message(self, message):
         which = message.WhichOneof('message')
         if which == 'stream_control':
             self._handle_stream_control(message.stream_control)
         elif which == 'frame_capture':
             self._handle_frame_capture(message.frame_capture)
+        elif which == 'reset':
+            self._logger.info('Resetting...')
+            self._send_command(ClientCommand.RESET)
+        elif which == 'response':
+            self._logger.info('Detection Correct: ' + str(message.response.correct))
+            if (message.response.correct):
+                self._send_command(ClientCommand.YES)
+            else:
+                self._send_command(ClientCommand.NO)
     
     def _handle_frame_capture(self, frame_capture):
         overlay = frame_capture.overlay
