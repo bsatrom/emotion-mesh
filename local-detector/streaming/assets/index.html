@@ -51,11 +51,14 @@
       </div>
     </div>
     <section class="messages">
-      <b-message v-show="!captureMode && !isAwaitingResponse" title="Ready to begin?" size="is-large" :closable="false"
+      <b-message v-if="!captureMode && !isAwaitingResponse" title="Ready to begin?" size="is-large" :closable="false"
         type="is-info" has-icon>
-        Hit the <strong style="color: green;">green</strong> button to start the demo...
+        Hit the <strong style="color: green;">GREEN</strong> button to start the demo...
       </b-message>
-      <b-message v-show="isAwaitingResponse" title="How did the machine do?" size="is-large" :closable="false"
+      <b-message v-if="captureMode" title="Say Cheese!" size="is-large" :closable="false" type="is-success" has-icon>
+        Hit the <strong style="color: green;">GREEN</strong> button to take a photo.
+      </b-message>
+      <b-message v-if="isAwaitingResponse" title="How did the machine do?" size="is-large" :closable="false"
         type="is-warning" has-icon>
         The machine predicted <strong>{{ mainEmotion }}</strong>. Is this correct? <br />
         Hit the <strong style="color: green;">GREEN</strong> button if yes. <strong style="color: red;">RED</strong> if
