@@ -45,6 +45,14 @@ button {
   padding-top: 5%;
 }
 
+.heading {
+  font-size: 26px;
+}
+
+.title {
+  font-size: 60px;
+}
+
 .messages {
   width: 80%;
   margin: 0 auto;

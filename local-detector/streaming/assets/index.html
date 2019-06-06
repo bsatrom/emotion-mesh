@@ -30,8 +30,14 @@
       <b-icon pack="fas" icon="sync-alt" size="is-large" custom-class="fa-spin">
       </b-icon>
     </b-loading>
-    <b-button v-on:click="captureImage" type="is-info">Capture Image</b-button>
-    <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>
+    <div class="level-item has-text-centered" v-show="lastInference">
+      <div>
+        <p class="heading">Last Inference</p>
+        <p class="title"><strong>{{ lastInference }}</strong></p>
+      </div>
+    </div>
+    <!--<b-button v-on:click="captureImage" type="is-info">Capture Image</b-button>
+    <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>-->
 
     <div class="media">
       <div id="container" v-show="captureMode"></div>
@@ -81,6 +87,7 @@
         isFullPage: true,
         resultImage: '',
         emotionResult: null,
+        lastInference: null,
         mainEmotion: '',
         isProcessing: false,
         isAwaitingResponse: false,

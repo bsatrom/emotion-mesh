@@ -128,7 +128,7 @@ window.onload = function() {
           // Update state with image path and detection result
           data = window.app.$data;
           window.app.$notification.open({
-            duration: 5000,
+            duration: 3000,
             hasIcon: true,
             message: 'Image Processed!',
             type: 'is-success'
@@ -136,7 +136,7 @@ window.onload = function() {
 
           let emotionData = JSON.parse(clientBound.detectionResult.emotionResult.replace(/'/g,'"'));
           
-          if (emotionData) {
+          if (emotionData[0]) {
             emotionData = emotionData[0];
             const emotionKeys = Object.keys(emotionData).sort();
             let emotionVals = [];
@@ -170,10 +170,27 @@ window.onload = function() {
           }
           break;
         case 'response':
+          let msg, type = null;
           data = window.app.$data;
           data.inferenceResponse = true;
           data.inferenceCorrect = clientBound.response ? clientBound.response.correct : false;
           data.isAwaitingResponse = false;
+          if (data.inferenceCorrect) {
+            msg = 'Inference was correct!'
+            type = 'is-success';
+          } else {
+            msg = 'Inference was incorrect!'
+            type = 'is-danger';
+          }
+
+          window.app.$notification.open({
+            duration: 3000,
+            hasIcon: true,
+            message: msg,
+            type: type
+          });
+          data.lastInference = data.inferenceCorrect ? "Correct" : "Incorrect";
+
           break;
         case 'reset':
           window.app.reset();

@@ -35,7 +35,7 @@ def getRectangle(faceDictionary):
 def getMainEmotion(faceDictionary):
     # Get the emotion collection and sort in acending order to get the top result
     emotions = faceDictionary['faceAttributes']['emotion']
-    print(emotions)
+    # print(emotions)
     emotions = sorted(emotions, key=emotions.get, reverse=True)
     return emotions[0]
 
