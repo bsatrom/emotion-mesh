@@ -332,6 +332,16 @@ class StreamingServer:
             for cl in self._enabled_clients:
                 cl.send_processing_message()
             
+            # Remove photos from assets/emotion_files to clear out data from previous runs
+            assets_path = '/home/mendel/emotion-mesh/local-detector/streaming/assets/emotion-files/'
+            for afile in os.listdir(assets_path):
+                file_path = os.path.join(assets_path, afile)
+                try:
+                    if os.path.isfile(file_path):
+                        os.unlink(file_path)
+                except Exception as e:
+                    logger.warning('Error removing files: ' + str(e))
+
             captured_frame = self._camera.capture_frame()
             logger.info('Frame captured: ' + captured_frame)
             
@@ -352,7 +362,6 @@ class StreamingServer:
             
             root_mod_file = os.path.splitext(captured_frame)[0] + '_modified.png'
             # Move modified photo into streaming/assets folder
-            assets_path = '/home/mendel/emotion-mesh/local-detector/streaming/assets/emotion-files/'
             copyfile(cloud_path + root_mod_file, assets_path + captured_frame)
             
             # Call back to client with results image and emotion model result
