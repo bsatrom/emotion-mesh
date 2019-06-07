@@ -1,3 +1,7 @@
+import sys
+sys.path.insert(0, '/home/mendel/emotion-mesh/cloud-detector')
+sys.path.append('db')
+
 import base64
 import contextlib
 import hashlib
@@ -9,8 +13,6 @@ import select
 import socket
 import struct
 import subprocess
-import sys
-sys.path.insert(0, '/home/mendel/emotion-mesh/cloud-detector')
 import threading
 import time
 from shutil import copyfile, move
@@ -19,6 +21,9 @@ from detect_face import perform_cloud_detection
 from enum import Enum
 from http.server import BaseHTTPRequestHandler
 from itertools import cycle
+
+import globals
+from .db import emotionBackend
 
 from .proto import messages_pb2 as pb2
 
@@ -356,6 +361,10 @@ class StreamingServer:
             
             # Call cloud detector
             faceDictionary = perform_cloud_detection(captured_frame)
+
+            # Save result to backend
+            globals.last_image = os.path.splitext(captured_frame)[0]
+            emotionBackend.createResult(globals.last_image, faceDictionary)
             
             # Call local detector
             # TODO: This requires some additional work and a TF2.0 port of an existing emotion model to work
@@ -625,6 +634,7 @@ class ProtoClient(Client):
             self._send_command(ClientCommand.RESET)
         elif which == 'response':
             self._logger.info('Detection Correct: ' + str(message.response.correct))
+            emotionBackend.saveResponse(globals.last_image, message.response.correct)
             if (message.response.correct):
                 self._send_command(ClientCommand.YES)
             else:

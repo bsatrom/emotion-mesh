@@ -69,4 +69,5 @@ while True:
     elif (serial_message == 'no'):
       print('Emotion inference was wrong!')
       send_response(False)
-    
+  #result = ws.recv()
+  #print("Received '%s'" % result)
