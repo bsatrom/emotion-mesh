@@ -3,12 +3,14 @@ from periphery import Serial
 from time import sleep
 import signal
 import sys
-from websocket import create_connection
+import websocket
 import socket
 
-sock_ip = "192.168.10.216:4664"
-print('Opening websocket connection to server...')
-ws = create_connection("ws://" + sock_ip + "/stream")
+def on_message(ws, message):
+  print(message)
+
+def on_open(ws):
+  print("Websocket connection open...")
 
 # import protobuf
 sys.path.insert(0, '/home/mendel/emotion-mesh/local-detector/streaming')
@@ -23,10 +25,6 @@ def signal_handler(signal, frame):
     print('Closing socket...')
     ws.close()
     exit(0)
-
-print('Waiting for a message from the Argon...')
-
-signal.signal(signal.SIGINT, signal_handler)
 
 def capture_image():
   message = messages_pb2.ServerBound()
@@ -52,6 +50,16 @@ def send_response(isCorrect):
   print('Sending inference response...')
   ws.send_binary(message.SerializeToString())
 
+signal.signal(signal.SIGINT, signal_handler)
+
+if __name__ == "__main__":
+  websocket.enableTrace(True)
+  sock_ip = "192.168.10.216:4664"
+  ws = websocket.WebSocketApp("ws://" + sock_ip + "/stream",
+                                on_message = on_message)
+  ws.on_open = on_open
+  ws.run_forever()
+
 # wait for something from the Argon to trigger the demo
 while True:
   if (serial.poll(timeout=1)):
@@ -69,5 +77,3 @@ while True:
     elif (serial_message == 'no'):
       print('Emotion inference was wrong!')
       send_response(False)
-  #result = ws.recv()
-  #print("Received '%s'" % result)
