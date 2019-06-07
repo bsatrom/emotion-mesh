@@ -6,6 +6,7 @@ message ServerBound {
     FrameCapture frame_capture = 2;
     Reset reset = 3;
     Response response = 4;
+    ResultStats result_stats = 5;
   }
 }
 
@@ -15,6 +16,9 @@ message StreamControl {
 
 message FrameCapture {
   bool overlay = 1;
+}
+
+message ResultStats {
 }
 
 message ClientBound {
@@ -27,6 +31,7 @@ message ClientBound {
     Reset reset = 6;
     Processing processing = 7;
     Response response = 8;
+    Stats stats = 9;
   }
   uint64 timestamp_us = 10;
 }
@@ -60,4 +65,10 @@ message Processing {
 
 message Response {
   bool correct = 1;
+}
+
+message Stats {
+  uint32 total = 1;
+  uint32 correct = 1;
+  uint32 incorrect = 1;
 }
