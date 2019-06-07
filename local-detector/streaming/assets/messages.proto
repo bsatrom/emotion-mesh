@@ -69,6 +69,6 @@ message Response {
 
 message Stats {
   uint32 total = 1;
-  uint32 correct = 1;
-  uint32 incorrect = 1;
+  uint32 correct = 2;
+  uint32 incorrect = 3;
 }

@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n.local-detector/streaming/assets/messages.proto\"\xa2\x01\n\x0bServerBound\x12(\n\x0estream_control\x18\x01 \x01(\x0b\x32\x0e.StreamControlH\x00\x12&\n\rframe_capture\x18\x02 \x01(\x0b\x32\r.FrameCaptureH\x00\x12\x17\n\x05reset\x18\x03 \x01(\x0b\x32\x06.ResetH\x00\x12\x1d\n\x08response\x18\x04 \x01(\x0b\x32\t.ResponseH\x00\x42\t\n\x07message\" \n\rStreamControl\x12\x0f\n\x07\x65nabled\x18\x01 \x01(\x08\"\x1f\n\x0c\x46rameCapture\x12\x0f\n\x07overlay\x18\x01 \x01(\x08\"\x9c\x02\n\x0b\x43lientBound\x12\x17\n\x05start\x18\x01 \x01(\x0b\x32\x06.StartH\x00\x12\x15\n\x04stop\x18\x02 \x01(\x0b\x32\x05.StopH\x00\x12\x17\n\x05video\x18\x03 \x01(\x0b\x32\x06.VideoH\x00\x12\x1b\n\x07overlay\x18\x04 \x01(\x0b\x32\x08.OverlayH\x00\x12+\n\x0f\x64\x65tectionResult\x18\x05 \x01(\x0b\x32\x10.DetectionResultH\x00\x12\x17\n\x05reset\x18\x06 \x01(\x0b\x32\x06.ResetH\x00\x12!\n\nprocessing\x18\x07 \x01(\x0b\x32\x0b.ProcessingH\x00\x12\x1d\n\x08response\x18\x08 \x01(\x0b\x32\t.ResponseH\x00\x12\x14\n\x0ctimestamp_us\x18\n \x01(\x04\x42\t\n\x07message\"&\n\x05Start\x12\r\n\x05width\x18\x01 \x01(\r\x12\x0e\n\x06height\x18\x02 \x01(\r\"\x06\n\x04Stop\"\x15\n\x05Video\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"\x16\n\x07Overlay\x12\x0b\n\x03svg\x18\x01 \x01(\t\";\n\x0f\x44\x65tectionResult\x12\x11\n\timagePath\x18\x01 \x01(\t\x12\x15\n\remotionResult\x18\x02 \x01(\t\"\x07\n\x05Reset\"\x0c\n\nProcessing\"\x1b\n\x08Response\x12\x0f\n\x07\x63orrect\x18\x01 \x01(\x08\x62\x06proto3')
+  serialized_pb=_b('\n.local-detector/streaming/assets/messages.proto\"\xc8\x01\n\x0bServerBound\x12(\n\x0estream_control\x18\x01 \x01(\x0b\x32\x0e.StreamControlH\x00\x12&\n\rframe_capture\x18\x02 \x01(\x0b\x32\r.FrameCaptureH\x00\x12\x17\n\x05reset\x18\x03 \x01(\x0b\x32\x06.ResetH\x00\x12\x1d\n\x08response\x18\x04 \x01(\x0b\x32\t.ResponseH\x00\x12$\n\x0cresult_stats\x18\x05 \x01(\x0b\x32\x0c.ResultStatsH\x00\x42\t\n\x07message\" \n\rStreamControl\x12\x0f\n\x07\x65nabled\x18\x01 \x01(\x08\"\x1f\n\x0c\x46rameCapture\x12\x0f\n\x07overlay\x18\x01 \x01(\x08\"\r\n\x0bResultStats\"\xb5\x02\n\x0b\x43lientBound\x12\x17\n\x05start\x18\x01 \x01(\x0b\x32\x06.StartH\x00\x12\x15\n\x04stop\x18\x02 \x01(\x0b\x32\x05.StopH\x00\x12\x17\n\x05video\x18\x03 \x01(\x0b\x32\x06.VideoH\x00\x12\x1b\n\x07overlay\x18\x04 \x01(\x0b\x32\x08.OverlayH\x00\x12+\n\x0f\x64\x65tectionResult\x18\x05 \x01(\x0b\x32\x10.DetectionResultH\x00\x12\x17\n\x05reset\x18\x06 \x01(\x0b\x32\x06.ResetH\x00\x12!\n\nprocessing\x18\x07 \x01(\x0b\x32\x0b.ProcessingH\x00\x12\x1d\n\x08response\x18\x08 \x01(\x0b\x32\t.ResponseH\x00\x12\x17\n\x05stats\x18\t \x01(\x0b\x32\x06.StatsH\x00\x12\x14\n\x0ctimestamp_us\x18\n \x01(\x04\x42\t\n\x07message\"&\n\x05Start\x12\r\n\x05width\x18\x01 \x01(\r\x12\x0e\n\x06height\x18\x02 \x01(\r\"\x06\n\x04Stop\"\x15\n\x05Video\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"\x16\n\x07Overlay\x12\x0b\n\x03svg\x18\x01 \x01(\t\";\n\x0f\x44\x65tectionResult\x12\x11\n\timagePath\x18\x01 \x01(\t\x12\x15\n\remotionResult\x18\x02 \x01(\t\"\x07\n\x05Reset\"\x0c\n\nProcessing\"\x1b\n\x08Response\x12\x0f\n\x07\x63orrect\x18\x01 \x01(\x08\":\n\x05Stats\x12\r\n\x05total\x18\x01 \x01(\r\x12\x0f\n\x07\x63orrect\x18\x02 \x01(\r\x12\x11\n\tincorrect\x18\x03 \x01(\rb\x06proto3')
 )
 
 
@@ -61,6 +61,13 @@ _SERVERBOUND = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='result_stats', full_name='ServerBound.result_stats', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -77,7 +84,7 @@ _SERVERBOUND = _descriptor.Descriptor(
       index=0, containing_type=None, fields=[]),
   ],
   serialized_start=51,
-  serialized_end=213,
+  serialized_end=251,
 )
 
 
@@ -107,8 +114,8 @@ _STREAMCONTROL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=215,
-  serialized_end=247,
+  serialized_start=253,
+  serialized_end=285,
 )
 
 
@@ -138,8 +145,32 @@ _FRAMECAPTURE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=249,
-  serialized_end=280,
+  serialized_start=287,
+  serialized_end=318,
+)
+
+
+_RESULTSTATS = _descriptor.Descriptor(
+  name='ResultStats',
+  full_name='ResultStats',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=320,
+  serialized_end=333,
 )
 
 
@@ -207,7 +238,14 @@ _CLIENTBOUND = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='timestamp_us', full_name='ClientBound.timestamp_us', index=8,
+      name='stats', full_name='ClientBound.stats', index=8,
+      number=9, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='timestamp_us', full_name='ClientBound.timestamp_us', index=9,
       number=10, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -228,8 +266,8 @@ _CLIENTBOUND = _descriptor.Descriptor(
       name='message', full_name='ClientBound.message',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=283,
-  serialized_end=567,
+  serialized_start=336,
+  serialized_end=645,
 )
 
 
@@ -266,8 +304,8 @@ _START = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=569,
-  serialized_end=607,
+  serialized_start=647,
+  serialized_end=685,
 )
 
 
@@ -290,8 +328,8 @@ _STOP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=609,
-  serialized_end=615,
+  serialized_start=687,
+  serialized_end=693,
 )
 
 
@@ -321,8 +359,8 @@ _VIDEO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=617,
-  serialized_end=638,
+  serialized_start=695,
+  serialized_end=716,
 )
 
 
@@ -352,8 +390,8 @@ _OVERLAY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=640,
-  serialized_end=662,
+  serialized_start=718,
+  serialized_end=740,
 )
 
 
@@ -390,8 +428,8 @@ _DETECTIONRESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=664,
-  serialized_end=723,
+  serialized_start=742,
+  serialized_end=801,
 )
 
 
@@ -414,8 +452,8 @@ _RESET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=725,
-  serialized_end=732,
+  serialized_start=803,
+  serialized_end=810,
 )
 
 
@@ -438,8 +476,8 @@ _PROCESSING = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=734,
-  serialized_end=746,
+  serialized_start=812,
+  serialized_end=824,
 )
 
 
@@ -469,14 +507,60 @@ _RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=748,
-  serialized_end=775,
+  serialized_start=826,
+  serialized_end=853,
+)
+
+
+_STATS = _descriptor.Descriptor(
+  name='Stats',
+  full_name='Stats',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='total', full_name='Stats.total', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='correct', full_name='Stats.correct', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='incorrect', full_name='Stats.incorrect', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=855,
+  serialized_end=913,
 )
 
 _SERVERBOUND.fields_by_name['stream_control'].message_type = _STREAMCONTROL
 _SERVERBOUND.fields_by_name['frame_capture'].message_type = _FRAMECAPTURE
 _SERVERBOUND.fields_by_name['reset'].message_type = _RESET
 _SERVERBOUND.fields_by_name['response'].message_type = _RESPONSE
+_SERVERBOUND.fields_by_name['result_stats'].message_type = _RESULTSTATS
 _SERVERBOUND.oneofs_by_name['message'].fields.append(
   _SERVERBOUND.fields_by_name['stream_control'])
 _SERVERBOUND.fields_by_name['stream_control'].containing_oneof = _SERVERBOUND.oneofs_by_name['message']
@@ -489,6 +573,9 @@ _SERVERBOUND.fields_by_name['reset'].containing_oneof = _SERVERBOUND.oneofs_by_n
 _SERVERBOUND.oneofs_by_name['message'].fields.append(
   _SERVERBOUND.fields_by_name['response'])
 _SERVERBOUND.fields_by_name['response'].containing_oneof = _SERVERBOUND.oneofs_by_name['message']
+_SERVERBOUND.oneofs_by_name['message'].fields.append(
+  _SERVERBOUND.fields_by_name['result_stats'])
+_SERVERBOUND.fields_by_name['result_stats'].containing_oneof = _SERVERBOUND.oneofs_by_name['message']
 _CLIENTBOUND.fields_by_name['start'].message_type = _START
 _CLIENTBOUND.fields_by_name['stop'].message_type = _STOP
 _CLIENTBOUND.fields_by_name['video'].message_type = _VIDEO
@@ -497,6 +584,7 @@ _CLIENTBOUND.fields_by_name['detectionResult'].message_type = _DETECTIONRESULT
 _CLIENTBOUND.fields_by_name['reset'].message_type = _RESET
 _CLIENTBOUND.fields_by_name['processing'].message_type = _PROCESSING
 _CLIENTBOUND.fields_by_name['response'].message_type = _RESPONSE
+_CLIENTBOUND.fields_by_name['stats'].message_type = _STATS
 _CLIENTBOUND.oneofs_by_name['message'].fields.append(
   _CLIENTBOUND.fields_by_name['start'])
 _CLIENTBOUND.fields_by_name['start'].containing_oneof = _CLIENTBOUND.oneofs_by_name['message']
@@ -521,9 +609,13 @@ _CLIENTBOUND.fields_by_name['processing'].containing_oneof = _CLIENTBOUND.oneofs
 _CLIENTBOUND.oneofs_by_name['message'].fields.append(
   _CLIENTBOUND.fields_by_name['response'])
 _CLIENTBOUND.fields_by_name['response'].containing_oneof = _CLIENTBOUND.oneofs_by_name['message']
+_CLIENTBOUND.oneofs_by_name['message'].fields.append(
+  _CLIENTBOUND.fields_by_name['stats'])
+_CLIENTBOUND.fields_by_name['stats'].containing_oneof = _CLIENTBOUND.oneofs_by_name['message']
 DESCRIPTOR.message_types_by_name['ServerBound'] = _SERVERBOUND
 DESCRIPTOR.message_types_by_name['StreamControl'] = _STREAMCONTROL
 DESCRIPTOR.message_types_by_name['FrameCapture'] = _FRAMECAPTURE
+DESCRIPTOR.message_types_by_name['ResultStats'] = _RESULTSTATS
 DESCRIPTOR.message_types_by_name['ClientBound'] = _CLIENTBOUND
 DESCRIPTOR.message_types_by_name['Start'] = _START
 DESCRIPTOR.message_types_by_name['Stop'] = _STOP
@@ -533,6 +625,7 @@ DESCRIPTOR.message_types_by_name['DetectionResult'] = _DETECTIONRESULT
 DESCRIPTOR.message_types_by_name['Reset'] = _RESET
 DESCRIPTOR.message_types_by_name['Processing'] = _PROCESSING
 DESCRIPTOR.message_types_by_name['Response'] = _RESPONSE
+DESCRIPTOR.message_types_by_name['Stats'] = _STATS
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 ServerBound = _reflection.GeneratedProtocolMessageType('ServerBound', (_message.Message,), {
@@ -555,6 +648,13 @@ FrameCapture = _reflection.GeneratedProtocolMessageType('FrameCapture', (_messag
   # @@protoc_insertion_point(class_scope:FrameCapture)
   })
 _sym_db.RegisterMessage(FrameCapture)
+
+ResultStats = _reflection.GeneratedProtocolMessageType('ResultStats', (_message.Message,), {
+  'DESCRIPTOR' : _RESULTSTATS,
+  '__module__' : 'local_detector.streaming.assets.messages_pb2'
+  # @@protoc_insertion_point(class_scope:ResultStats)
+  })
+_sym_db.RegisterMessage(ResultStats)
 
 ClientBound = _reflection.GeneratedProtocolMessageType('ClientBound', (_message.Message,), {
   'DESCRIPTOR' : _CLIENTBOUND,
@@ -618,6 +718,13 @@ Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Messag
   # @@protoc_insertion_point(class_scope:Response)
   })
 _sym_db.RegisterMessage(Response)
+
+Stats = _reflection.GeneratedProtocolMessageType('Stats', (_message.Message,), {
+  'DESCRIPTOR' : _STATS,
+  '__module__' : 'local_detector.streaming.assets.messages_pb2'
+  # @@protoc_insertion_point(class_scope:Stats)
+  })
+_sym_db.RegisterMessage(Stats)
 
 
 # @@protoc_insertion_point(module_scope)
