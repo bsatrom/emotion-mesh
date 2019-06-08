@@ -69,7 +69,6 @@ def getStats():
     'correct': 0,
     'incorrect': 0,
   }
-  print('Connecting to DB to fetch stats')
   connection = pymysql.connect(host='localhost', 
                             user=config.db_user,
                             password=config.db_pw,
