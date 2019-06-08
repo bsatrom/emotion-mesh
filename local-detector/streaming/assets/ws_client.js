@@ -49,8 +49,22 @@ function captureFrame() {
       console.log("Socket connected for image capture.");
       serverBound = ServerBound.create({frameCapture: {overlay:false}});
 
-      console.log(serverBound);
+      socket.send(ServerBound.encode(serverBound).finish());
+    };
+  });
+}
 
+function getStats() {
+  protobuf.load("messages.proto", function(err, root) {
+    var ServerBound = root.lookupType("ServerBound");
+    var socket = new WebSocket("ws://" + window.location.host + "/stream");
+    
+    socket.binaryType = "arraybuffer";
+
+    socket.onopen = function(event) {
+      console.log("Socket connected for image capture.");
+
+      serverBound = ServerBound.create({resultStats: {}});
       socket.send(ServerBound.encode(serverBound).finish());
     };
   });
@@ -97,6 +111,7 @@ window.onload = function() {
             player = createPlayer(start.width, start.height, streamControl);
             console.log("Started: " + start.width + "x" + start.height);
           }
+          
           break;
         case 'video':
           player.decode(clientBound.video.data);
@@ -182,6 +197,7 @@ window.onload = function() {
             msg = 'Inference was incorrect!'
             type = 'is-danger';
           }
+          getStats();
 
           window.app.$notification.open({
             duration: 3000,
@@ -191,6 +207,13 @@ window.onload = function() {
           });
           data.lastInference = data.inferenceCorrect ? "Correct" : "Incorrect";
 
+          break;
+        case 'stats':
+          console.log(clientBound.stats);
+          stats = window.app.$data.stats;
+          stats.total = clientBound.stats.total;
+          stats.correct = clientBound.stats.correct;
+          stats.incorrect = clientBound.stats.incorrect;
           break;
         case 'reset':
           window.app.reset();

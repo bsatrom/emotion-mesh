@@ -30,12 +30,32 @@
       <b-icon pack="fas" icon="sync-alt" size="is-large" custom-class="fa-spin">
       </b-icon>
     </b-loading>
-    <div class="level-item has-text-centered" v-show="lastInference">
-      <div>
-        <p class="heading">Last Inference</p>
-        <p class="title"><strong>{{ lastInference }}</strong></p>
+    <nav class="level">
+      <div class="level-item has-text-centered" v-show="lastInference">
+        <div>
+          <p class="heading">Last Inference</p>
+          <p class="title"><strong>{{ lastInference }}</strong></p>
+        </div>
       </div>
-    </div>
+      <div class="level-item has-text-centered" v-show="stats.total > 0">
+        <div>
+          <p class="heading">Inferences</p>
+          <p class="title">{{ stats.total }}</p>
+        </div>
+      </div>
+      <div class="level-item has-text-centered" v-show="stats.correct > 0">
+        <div>
+          <p class="heading">Correct</p>
+          <p class="title">{{ Math.round(stats.correct / stats.total * 100) }}%</p>
+        </div>
+      </div>
+      <div class="level-item has-text-centered" v-show="stats.incorrect > 0">
+        <div>
+          <p class="heading">Incorrect</p>
+          <p class="title">{{ Math.round(stats.incorrect / stats.total * 100) }}%</p>
+        </div>
+      </div>
+    </nav>
     <!--<b-button v-on:click="captureImage" type="is-info">Capture Image</b-button>
     <b-button v-on:click="reset" type="is-danger">Reset Demo</b-button>-->
 
@@ -95,7 +115,16 @@
         isProcessing: false,
         isAwaitingResponse: false,
         inferenceResponse: false,
-        inferenceCorrect: false
+        inferenceCorrect: false,
+        gotStats: false,
+        stats: {
+          total: 0,
+          correct: 0,
+          incorrect: 0
+        }
+      },
+      mounted: function () {
+        window.getStats();
       },
       methods: {
         captureImage: function () {

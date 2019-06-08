@@ -75,6 +75,10 @@ def ResponseMessage(correct):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
                            response=pb2.Response(correct=correct))
 
+def StatsMessage(total, correct, incorrect):
+    return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
+                           stats=pb2.Stats(total=total, correct=correct, incorrect=incorrect))
+
 def _parse_server_message(data):
     message = pb2.ServerBound()
     message.ParseFromString(data)
@@ -332,7 +336,15 @@ class StreamingServer:
             for cl in self._enabled_clients:
                 cl.send_response_message(correct=False)
             logger.info('Response sent')
-
+        elif command is ClientCommand.STATS:
+            #get stats from db
+            stats = emotionBackend.getStats()
+            total = stats['total'][0]
+            correct = stats['correct'][0]
+            incorrect = stats['incorrect'][0]
+            for cl in self._enabled_clients:
+                cl.send_stats_message(total=total, correct=correct, incorrect=incorrect)
+                logger.info('Stats sent to clients...')
         elif command is ClientCommand.FRAME:
             for cl in self._enabled_clients:
                 cl.send_processing_message()
@@ -467,6 +479,7 @@ class ClientCommand(Enum):
     RESET = 5
     YES = 6
     NO = 7
+    STATS = 8
 
 class Client:
     def __init__(self, name, sock, command_queue):
@@ -532,6 +545,12 @@ class Client:
             if self._state != ClientState.DISABLED:
                 self._queue_response_message(correct)
 
+    def send_stats_message(self, total, correct, incorrect):
+        """Can be called by any user thread."""
+        with self._lock:
+            if self._state != ClientState.DISABLED:
+                self._queue_stats_message(total, correct, incorrect)
+    
     def send_detection_result(self, imagePath, emotionResult):
         """Can be called by any user thread."""
         with self._lock:
@@ -620,6 +639,9 @@ class ProtoClient(Client):
     def _queue_response_message(self, correct):
         return self._queue_message(ResponseMessage(correct))
 
+    def _queue_stats_message(self, total, correct, incorrect):
+        return self._queue_message(StatsMessage(total, correct, incorrect))
+
     def _queue_processing_message(self):
         return self._queue_message(ProcessingMessage())
 
@@ -632,6 +654,9 @@ class ProtoClient(Client):
         elif which == 'reset':
             self._logger.info('Resetting...')
             self._send_command(ClientCommand.RESET)
+        elif which == 'result_stats':
+            self._logger.info('Received request for stats')
+            self._send_command(ClientCommand.STATS)
         elif which == 'response':
             self._logger.info('Detection Correct: ' + str(message.response.correct))
             emotionBackend.saveResponse(globals.last_image, message.response.correct)
