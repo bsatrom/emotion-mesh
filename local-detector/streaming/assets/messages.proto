@@ -71,4 +71,12 @@ message Stats {
   uint32 total = 1;
   uint32 correct = 2;
   uint32 incorrect = 3;
+  float anger = 4;
+  float neutral = 5;
+  float happiness = 6;
+  float contempt = 7;
+  float disgust = 8;
+  float fear = 9;
+  float sadness = 10;
+  float surprise = 11;
 }

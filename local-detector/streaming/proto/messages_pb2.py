@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n.local-detector/streaming/assets/messages.proto\"\xc8\x01\n\x0bServerBound\x12(\n\x0estream_control\x18\x01 \x01(\x0b\x32\x0e.StreamControlH\x00\x12&\n\rframe_capture\x18\x02 \x01(\x0b\x32\r.FrameCaptureH\x00\x12\x17\n\x05reset\x18\x03 \x01(\x0b\x32\x06.ResetH\x00\x12\x1d\n\x08response\x18\x04 \x01(\x0b\x32\t.ResponseH\x00\x12$\n\x0cresult_stats\x18\x05 \x01(\x0b\x32\x0c.ResultStatsH\x00\x42\t\n\x07message\" \n\rStreamControl\x12\x0f\n\x07\x65nabled\x18\x01 \x01(\x08\"\x1f\n\x0c\x46rameCapture\x12\x0f\n\x07overlay\x18\x01 \x01(\x08\"\r\n\x0bResultStats\"\xb5\x02\n\x0b\x43lientBound\x12\x17\n\x05start\x18\x01 \x01(\x0b\x32\x06.StartH\x00\x12\x15\n\x04stop\x18\x02 \x01(\x0b\x32\x05.StopH\x00\x12\x17\n\x05video\x18\x03 \x01(\x0b\x32\x06.VideoH\x00\x12\x1b\n\x07overlay\x18\x04 \x01(\x0b\x32\x08.OverlayH\x00\x12+\n\x0f\x64\x65tectionResult\x18\x05 \x01(\x0b\x32\x10.DetectionResultH\x00\x12\x17\n\x05reset\x18\x06 \x01(\x0b\x32\x06.ResetH\x00\x12!\n\nprocessing\x18\x07 \x01(\x0b\x32\x0b.ProcessingH\x00\x12\x1d\n\x08response\x18\x08 \x01(\x0b\x32\t.ResponseH\x00\x12\x17\n\x05stats\x18\t \x01(\x0b\x32\x06.StatsH\x00\x12\x14\n\x0ctimestamp_us\x18\n \x01(\x04\x42\t\n\x07message\"&\n\x05Start\x12\r\n\x05width\x18\x01 \x01(\r\x12\x0e\n\x06height\x18\x02 \x01(\r\"\x06\n\x04Stop\"\x15\n\x05Video\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"\x16\n\x07Overlay\x12\x0b\n\x03svg\x18\x01 \x01(\t\";\n\x0f\x44\x65tectionResult\x12\x11\n\timagePath\x18\x01 \x01(\t\x12\x15\n\remotionResult\x18\x02 \x01(\t\"\x07\n\x05Reset\"\x0c\n\nProcessing\"\x1b\n\x08Response\x12\x0f\n\x07\x63orrect\x18\x01 \x01(\x08\":\n\x05Stats\x12\r\n\x05total\x18\x01 \x01(\r\x12\x0f\n\x07\x63orrect\x18\x02 \x01(\r\x12\x11\n\tincorrect\x18\x03 \x01(\rb\x06proto3')
+  serialized_pb=_b('\n.local-detector/streaming/assets/messages.proto\"\xc8\x01\n\x0bServerBound\x12(\n\x0estream_control\x18\x01 \x01(\x0b\x32\x0e.StreamControlH\x00\x12&\n\rframe_capture\x18\x02 \x01(\x0b\x32\r.FrameCaptureH\x00\x12\x17\n\x05reset\x18\x03 \x01(\x0b\x32\x06.ResetH\x00\x12\x1d\n\x08response\x18\x04 \x01(\x0b\x32\t.ResponseH\x00\x12$\n\x0cresult_stats\x18\x05 \x01(\x0b\x32\x0c.ResultStatsH\x00\x42\t\n\x07message\" \n\rStreamControl\x12\x0f\n\x07\x65nabled\x18\x01 \x01(\x08\"\x1f\n\x0c\x46rameCapture\x12\x0f\n\x07overlay\x18\x01 \x01(\x08\"\r\n\x0bResultStats\"\xb5\x02\n\x0b\x43lientBound\x12\x17\n\x05start\x18\x01 \x01(\x0b\x32\x06.StartH\x00\x12\x15\n\x04stop\x18\x02 \x01(\x0b\x32\x05.StopH\x00\x12\x17\n\x05video\x18\x03 \x01(\x0b\x32\x06.VideoH\x00\x12\x1b\n\x07overlay\x18\x04 \x01(\x0b\x32\x08.OverlayH\x00\x12+\n\x0f\x64\x65tectionResult\x18\x05 \x01(\x0b\x32\x10.DetectionResultH\x00\x12\x17\n\x05reset\x18\x06 \x01(\x0b\x32\x06.ResetH\x00\x12!\n\nprocessing\x18\x07 \x01(\x0b\x32\x0b.ProcessingH\x00\x12\x1d\n\x08response\x18\x08 \x01(\x0b\x32\t.ResponseH\x00\x12\x17\n\x05stats\x18\t \x01(\x0b\x32\x06.StatsH\x00\x12\x14\n\x0ctimestamp_us\x18\n \x01(\x04\x42\t\n\x07message\"&\n\x05Start\x12\r\n\x05width\x18\x01 \x01(\r\x12\x0e\n\x06height\x18\x02 \x01(\r\"\x06\n\x04Stop\"\x15\n\x05Video\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"\x16\n\x07Overlay\x12\x0b\n\x03svg\x18\x01 \x01(\t\";\n\x0f\x44\x65tectionResult\x12\x11\n\timagePath\x18\x01 \x01(\t\x12\x15\n\remotionResult\x18\x02 \x01(\t\"\x07\n\x05Reset\"\x0c\n\nProcessing\"\x1b\n\x08Response\x12\x0f\n\x07\x63orrect\x18\x01 \x01(\x08\"\xc1\x01\n\x05Stats\x12\r\n\x05total\x18\x01 \x01(\r\x12\x0f\n\x07\x63orrect\x18\x02 \x01(\r\x12\x11\n\tincorrect\x18\x03 \x01(\r\x12\r\n\x05\x61nger\x18\x04 \x01(\x02\x12\x0f\n\x07neutral\x18\x05 \x01(\x02\x12\x11\n\thappiness\x18\x06 \x01(\x02\x12\x10\n\x08\x63ontempt\x18\x07 \x01(\x02\x12\x0f\n\x07\x64isgust\x18\x08 \x01(\x02\x12\x0c\n\x04\x66\x65\x61r\x18\t \x01(\x02\x12\x0f\n\x07sadness\x18\n \x01(\x02\x12\x10\n\x08surprise\x18\x0b \x01(\x02\x62\x06proto3')
 )
 
 
@@ -540,6 +540,62 @@ _STATS = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='anger', full_name='Stats.anger', index=3,
+      number=4, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='neutral', full_name='Stats.neutral', index=4,
+      number=5, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='happiness', full_name='Stats.happiness', index=5,
+      number=6, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='contempt', full_name='Stats.contempt', index=6,
+      number=7, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='disgust', full_name='Stats.disgust', index=7,
+      number=8, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='fear', full_name='Stats.fear', index=8,
+      number=9, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='sadness', full_name='Stats.sadness', index=9,
+      number=10, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='surprise', full_name='Stats.surprise', index=10,
+      number=11, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -552,8 +608,8 @@ _STATS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=855,
-  serialized_end=913,
+  serialized_start=856,
+  serialized_end=1049,
 )
 
 _SERVERBOUND.fields_by_name['stream_control'].message_type = _STREAMCONTROL
