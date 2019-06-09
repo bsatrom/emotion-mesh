@@ -75,9 +75,11 @@ def ResponseMessage(correct):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
                            response=pb2.Response(correct=correct))
 
-def StatsMessage(total, correct, incorrect):
+def StatsMessage(total, correct, incorrect, anger, neutral, happiness, contempt, disgust, fear, sadness, surprise):
     return pb2.ClientBound(timestamp_us=int(time.monotonic() * 1000000),
-                           stats=pb2.Stats(total=total, correct=correct, incorrect=incorrect))
+                           stats=pb2.Stats(total=total, correct=correct, incorrect=incorrect, anger=anger, 
+                           neutral=neutral, happiness=happiness, contempt=contempt, disgust=disgust, 
+                           fear=fear, sadness=sadness, surprise=surprise))
 
 def _parse_server_message(data):
     message = pb2.ServerBound()
@@ -307,10 +309,32 @@ class StreamingServer:
         logger.info('Camera start recording')
         self._camera.start_recording(self, format='h264', profile='baseline',
             inline_headers=True, bitrate=self._bitrate, intra_period=0)
+        time.sleep(.500)
+        self._get_stats()
 
     def _stop_recording(self):
         logger.info('Camera stop recording')
         self._camera.stop_recording()
+
+    def _get_stats(self):
+        stats = emotionBackend.getStats()
+
+        total = stats['total'][0]
+        correct = stats['correct'][0]
+        incorrect = stats['incorrect'][0]
+        anger = stats['anger']
+        neutral = stats['neutral']
+        happiness = stats['happiness']
+        contempt = stats['contempt']
+        disgust = stats['disgust']
+        fear = stats['fear']
+        sadness = stats['sadness']
+        surprise = stats['surprise']
+        for cl in self._enabled_clients:
+            cl.send_stats_message(total=total, correct=correct, incorrect=incorrect, anger=anger, 
+                                  neutral=neutral, happiness=happiness, contempt=contempt, 
+                                  disgust=disgust, fear=fear, sadness=sadness, surprise=surprise)
+            logger.info('Stats sent to clients...')
 
     def _process_command(self, client, command):
         was_streaming = bool(self._enabled_clients)
@@ -337,14 +361,7 @@ class StreamingServer:
                 cl.send_response_message(correct=False)
             logger.info('Response sent')
         elif command is ClientCommand.STATS:
-            #get stats from db
-            stats = emotionBackend.getStats()
-            total = stats['total'][0]
-            correct = stats['correct'][0]
-            incorrect = stats['incorrect'][0]
-            for cl in self._enabled_clients:
-                cl.send_stats_message(total=total, correct=correct, incorrect=incorrect)
-                logger.info('Stats sent to clients...')
+            self._get_stats()
         elif command is ClientCommand.FRAME:
             for cl in self._enabled_clients:
                 cl.send_processing_message()
@@ -545,11 +562,11 @@ class Client:
             if self._state != ClientState.DISABLED:
                 self._queue_response_message(correct)
 
-    def send_stats_message(self, total, correct, incorrect):
+    def send_stats_message(self, total, correct, incorrect, anger, neutral, happiness, contempt, disgust, fear, sadness, surprise):
         """Can be called by any user thread."""
         with self._lock:
             if self._state != ClientState.DISABLED:
-                self._queue_stats_message(total, correct, incorrect)
+                self._queue_stats_message(total, correct, incorrect, anger, neutral, happiness, contempt, disgust, fear, sadness, surprise)
     
     def send_detection_result(self, imagePath, emotionResult):
         """Can be called by any user thread."""
@@ -639,8 +656,8 @@ class ProtoClient(Client):
     def _queue_response_message(self, correct):
         return self._queue_message(ResponseMessage(correct))
 
-    def _queue_stats_message(self, total, correct, incorrect):
-        return self._queue_message(StatsMessage(total, correct, incorrect))
+    def _queue_stats_message(self, total, correct, incorrect, anger, neutral, happiness, contempt, disgust, fear, sadness, surprise):
+        return self._queue_message(StatsMessage(total, correct, incorrect, anger, neutral, happiness, contempt, disgust, fear, sadness, surprise))
 
     def _queue_processing_message(self):
         return self._queue_message(ProcessingMessage())

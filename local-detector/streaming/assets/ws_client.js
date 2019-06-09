@@ -209,11 +209,35 @@ window.onload = function() {
 
           break;
         case 'stats':
-          console.log(clientBound.stats);
-          stats = window.app.$data.stats;
+          data = window.app.$data;
+          
+          stats = data.stats;
           stats.total = clientBound.stats.total;
           stats.correct = clientBound.stats.correct;
           stats.incorrect = clientBound.stats.incorrect;
+          stats.averages.anger = Math.round(clientBound.stats.anger * 100);
+          stats.averages.contempt = Math.round(clientBound.stats.contempt * 100);
+          stats.averages.disgust = Math.round(clientBound.stats.disgust * 100);
+          stats.averages.fear = Math.round(clientBound.stats.fear * 100);
+          stats.averages.happiness = Math.round(clientBound.stats.happiness * 100);
+          stats.averages.neutral = Math.round(clientBound.stats.neutral * 100);
+          stats.averages.sadness = Math.round(clientBound.stats.sadness * 100);
+          stats.averages.surprise = Math.round(clientBound.stats.surprise * 100);
+          
+          data.gotStats = true;
+          if (!data.isAwaitingResponse) {
+            const emotionVals = [
+              stats.averages.anger,
+              stats.averages.contempt,
+              stats.averages.disgust,
+              stats.averages.fear,
+              stats.averages.happiness,
+              stats.averages.neutral,
+              stats.averages.sadness,
+              stats.averages.surprise
+            ];
+            window.app.showStatsChart(emotionVals);
+          }
           break;
         case 'reset':
           window.app.reset();

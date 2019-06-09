@@ -65,7 +65,7 @@
         <div class="results" v-show="!captureMode && resultImage !== ''">
           <img v-if="resultImage !== ''" :src=`emotion-files/${resultImage}` class="result-image" />
         </div>
-        <div class="chart" v-show="!!emotionResult">
+        <div class="chart" v-show="!!emotionResult || gotStats">
           <canvas id="resultChart"></canvas>
         </div>
       </div>
@@ -120,11 +120,18 @@
         stats: {
           total: 0,
           correct: 0,
-          incorrect: 0
+          incorrect: 0,
+          averages: {
+            anger: 0.0,
+            neutral: 0.0,
+            happiness: 0.0,
+            contempt: 0.0,
+            disgust: 0.0,
+            fear: 0.0,
+            sadness: 0.0,
+            surprise: 0.0,
+          }
         }
-      },
-      mounted: function () {
-        window.getStats();
       },
       methods: {
         captureImage: function () {
@@ -134,6 +141,9 @@
         },
         showResultChart: function (data) {
           initResultChart(data);
+        },
+        showStatsChart: function (data) {
+          getStatsChart(data);
         },
         reset: function () {
           this.captureMode = true;

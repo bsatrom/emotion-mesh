@@ -65,9 +65,17 @@ def getLastResult():
 
 def getStats(): 
   result = {
-    'total': 0,
-    'correct': 0,
-    'incorrect': 0,
+    'total': 0.0,
+    'correct': 0.0,
+    'incorrect': 0.0,
+    'anger': 0.0,
+    'neutral': 0.0,
+    'happiness': 0.0,
+    'contempt': 0.0,
+    'disgust': 0.0,
+    'fear': 0.0,
+    'sadness': 0.0,
+    'surprise': 0.0
   }
   connection = pymysql.connect(host='localhost', 
                             user=config.db_user,
@@ -90,6 +98,21 @@ def getStats():
           sql = "SELECT COUNT(*) from `result` WHERE `correct`=1"
           cursor.execute(sql)
           result['correct'] = cursor.fetchone()
+
+          #get averages
+          sql = "SELECT AVG(anger) AS anger, AVG(neutral) as neutral, AVG(happiness) as happiness,\
+                AVG(contempt) AS contempt, AVG(disgust) as disgust, AVG(fear) as fear, AVG(sadness) \
+                as sadness, AVG(surprise) as surprise from result"
+          cursor.execute(sql)
+          avgs = cursor.fetchone()
+          result['anger'] = avgs[0]
+          result['neutral'] = avgs[1]
+          result['happiness'] = avgs[2]
+          result['contempt'] = avgs[3]
+          result['disgust'] = avgs[4]
+          result['fear'] = avgs[5]
+          result['sadness'] = avgs[6]
+          result['surprise'] = avgs[7]
 
     connection.commit()
   finally:
