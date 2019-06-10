@@ -1,5 +1,6 @@
 #include "Particle.h"
 #include "neopixel.h"
+#include "math.h"
 
 /*
  * Project emotion-pixel-firmware
@@ -21,7 +22,10 @@ void rainbow(uint8_t wait);
 uint32_t Wheel(byte WheelPos);
 int adjustBrightness(String args);
 void handleIdle(const char *event, const char *payload);
+void handleWaiting(const char *event, const char *payload);
+
 void NewKITT(byte red, byte green, byte blue, int EyeSize, int SpeedDelay, int ReturnDelay);
+void RunningLights(byte red, byte green, byte blue, int WaveDelay);
 
 void setup()
 {
@@ -32,6 +36,7 @@ void setup()
   Particle.function("adjBright", adjustBrightness);
 
   Mesh.subscribe("state/idle", handleIdle);
+  Mesh.subscribe("state/waiting", handleWaiting);
 }
 
 void loop()
@@ -40,6 +45,11 @@ void loop()
   {
     // Idle Animation
     NewKITT(0xff, 0, 0, 8, 10, 50);
+  }
+  else if (mode == 1)
+  {
+    // Waiting Animation
+    RunningLights(0xff, 0xff, 0x00, 50);
   }
   else
   {
@@ -65,8 +75,12 @@ int adjustBrightness(String args)
 
 void handleIdle(const char *event, const char *payload)
 {
-  Particle.publish("idle-triggered", NULL, PRIVATE);
   mode = 0;
+}
+
+void handleWaiting(const char *event, const char *payload)
+{
+  mode = 1;
 }
 
 void rainbow(uint8_t wait)
@@ -123,6 +137,29 @@ void setAll(byte red, byte green, byte blue)
     setPixel(i, red, green, blue);
   }
   showStrip();
+}
+
+void RunningLights(byte red, byte green, byte blue, int WaveDelay)
+{
+  int Position = 0;
+
+  for (int i = 0; i < PIXEL_COUNT * 2; i++)
+  {
+    Position++; // = 0; //Position + Rate;
+    for (int i = 0; i < PIXEL_COUNT; i++)
+    {
+      // sine wave, 3 offset waves make a rainbow!
+      //float level = sin(i+Position) * 127 + 128;
+      //setPixel(i,level,0,0);
+      //float level = sin(i+Position) * 127 + 128;
+      setPixel(i, ((sin(i + Position) * 127 + 128) / 255) * red,
+               ((sin(i + Position) * 127 + 128) / 255) * green,
+               ((sin(i + Position) * 127 + 128) / 255) * blue);
+    }
+
+    showStrip();
+    delay(WaveDelay);
+  }
 }
 
 void CenterToOutside(byte red, byte green, byte blue, int EyeSize, int SpeedDelay, int ReturnDelay)

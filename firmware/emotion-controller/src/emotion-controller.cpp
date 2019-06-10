@@ -35,6 +35,7 @@ void exitResponse();
 // Event Functions
 int triggerCapture(String args);
 int triggerIdle(String args);
+int triggerWaiting(String args);
 
 // Utility functions
 void resetLEDs();
@@ -101,8 +102,9 @@ void setup()
   resetLEDs();
 
   Particle.function("sendSerial", sendSerial);
-  Particle.function("triggerCap", triggerCapture);
-  Particle.function("triggerIdle", triggerIdle);
+  Particle.function("tgCap", triggerCapture);
+  Particle.function("tgIdle", triggerIdle);
+  Particle.function("tgWait", triggerWaiting);
   Particle.variable("state", state);
 }
 
@@ -268,6 +270,13 @@ int triggerCapture(String args)
 int triggerIdle(String args)
 {
   controllerFSM.transitionTo(Idle);
+
+  return 1;
+}
+
+int triggerWaiting(String args)
+{
+  controllerFSM.transitionTo(Waiting);
 
   return 1;
 }
