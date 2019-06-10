@@ -34,7 +34,7 @@ button {
 }
 
 .resultsContainer {
-  width: 100%;
+  /* width: 100%; */
 }
 
 .chart {
@@ -43,6 +43,7 @@ button {
   height:40vh; 
   width:80vh;
   padding-top: 5%;
+  padding-left: 10%;
 }
 
 .heading {
