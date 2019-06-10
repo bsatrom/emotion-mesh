@@ -52,7 +52,7 @@ function initResultChart (res) {
 function getStatsChart(res) {
   var ctx = document.getElementById('resultChart').getContext('2d');
   var chart = new Chart(ctx, {
-    type: 'bar',
+    type: 'horizontalBar',
     data: {
       labels: chartLabels,
       datasets: [{
