@@ -34,6 +34,7 @@ void exitResponse();
 
 // Event Functions
 int triggerCapture(String args);
+int triggerIdle(String args);
 
 // Utility functions
 void resetLEDs();
@@ -101,6 +102,7 @@ void setup()
 
   Particle.function("sendSerial", sendSerial);
   Particle.function("triggerCap", triggerCapture);
+  Particle.function("triggerIdle", triggerIdle);
   Particle.variable("state", state);
 }
 
@@ -119,6 +121,8 @@ void configureIdle()
 {
   setState(STATE_IDLE, true);
   resetLEDs();
+
+  Mesh.publish("state/idle", NULL);
 }
 
 void updateIdle()
@@ -145,6 +149,8 @@ void configureCapture()
   setState(STATE_CAPTURE, true);
 
   digitalWrite(GREEN_LED, HIGH);
+
+  Mesh.publish("state/capture", NULL);
 }
 
 void updateCapture()
@@ -173,6 +179,8 @@ void configureWaiting()
 
   digitalWrite(GREEN_LED, HIGH);
   digitalWrite(RED_BUTTON, HIGH);
+
+  Mesh.publish("state/waiting", NULL);
 }
 
 void updateWaiting()
@@ -221,6 +229,8 @@ void configureResponse()
 
   digitalWrite(GREEN_LED, HIGH);
   digitalWrite(RED_LED, HIGH);
+
+  Mesh.publish("state/response", NULL);
 }
 
 void updateResponse()
@@ -251,6 +261,13 @@ void exitResponse()
 int triggerCapture(String args)
 {
   controllerFSM.transitionTo(Capture);
+
+  return 1;
+}
+
+int triggerIdle(String args)
+{
+  controllerFSM.transitionTo(Idle);
 
   return 1;
 }
