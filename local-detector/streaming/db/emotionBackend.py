@@ -1,4 +1,3 @@
-# MOVE TO CONFIG
 import pymysql
 import time
 from . import db_config as config
