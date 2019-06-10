@@ -34,6 +34,10 @@ void exitResponse();
 
 // Event Functions
 int triggerCapture(String args);
+int triggerIdle(String args);
+int triggerWaiting(String args);
+int triggerCorrect(String args);
+int triggerIncorrect(String args);
 
 // Utility functions
 void resetLEDs();
@@ -100,7 +104,11 @@ void setup()
   resetLEDs();
 
   Particle.function("sendSerial", sendSerial);
-  Particle.function("triggerCap", triggerCapture);
+  Particle.function("tgCap", triggerCapture);
+  Particle.function("tgIdle", triggerIdle);
+  Particle.function("tgWait", triggerWaiting);
+  Particle.function("tgCorrect", triggerCorrect);
+  Particle.function("tgIncorrect", triggerIncorrect);
   Particle.variable("state", state);
 }
 
@@ -119,6 +127,8 @@ void configureIdle()
 {
   setState(STATE_IDLE, true);
   resetLEDs();
+
+  Mesh.publish("state/idle", NULL);
 }
 
 void updateIdle()
@@ -133,6 +143,13 @@ void updateIdle()
 
     toggleState = !toggleState;
   }
+
+  if (greenDebouncer.update() && greenDebouncer.read() == LOW)
+  {
+    sendSerial("reset");
+
+    controllerFSM.transitionTo(Capture);
+  }
 }
 
 void exitIdle()
@@ -145,6 +162,8 @@ void configureCapture()
   setState(STATE_CAPTURE, true);
 
   digitalWrite(GREEN_LED, HIGH);
+
+  Mesh.publish("state/capture", NULL);
 }
 
 void updateCapture()
@@ -173,6 +192,8 @@ void configureWaiting()
 
   digitalWrite(GREEN_LED, HIGH);
   digitalWrite(RED_BUTTON, HIGH);
+
+  Mesh.publish("state/waiting", NULL);
 }
 
 void updateWaiting()
@@ -221,6 +242,8 @@ void configureResponse()
 
   digitalWrite(GREEN_LED, HIGH);
   digitalWrite(RED_LED, HIGH);
+
+  Mesh.publish("state/response", NULL);
 }
 
 void updateResponse()
@@ -229,15 +252,20 @@ void updateResponse()
   {
     responseCaptured = true;
     sendSerial("yes");
+
+    Mesh.publish("state/correct", NULL);
   }
   else if (redDebouncer.update() && redDebouncer.read() == LOW && !responseCaptured)
   {
     responseCaptured = true;
     sendSerial("no");
+
+    Mesh.publish("state/incorrect", NULL);
   }
 
   if (responseCaptured)
   {
+    delay(10000); // Pause to allow the result to show on the neopixel strips
     controllerFSM.transitionTo(Idle);
   }
 }
@@ -251,6 +279,34 @@ void exitResponse()
 int triggerCapture(String args)
 {
   controllerFSM.transitionTo(Capture);
+
+  return 1;
+}
+
+int triggerIdle(String args)
+{
+  controllerFSM.transitionTo(Idle);
+
+  return 1;
+}
+
+int triggerWaiting(String args)
+{
+  controllerFSM.transitionTo(Waiting);
+
+  return 1;
+}
+
+int triggerCorrect(String args)
+{
+  Mesh.publish("state/correct");
+
+  return 1;
+}
+
+int triggerIncorrect(String args)
+{
+  Mesh.publish("state/incorrect");
 
   return 1;
 }
