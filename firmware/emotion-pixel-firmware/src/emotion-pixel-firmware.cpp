@@ -14,7 +14,7 @@
 #define PIXEL_TYPE WS2812B
 #define BRIGHTNESS 50
 
-int mode = -1; // 0 = IDLE
+int mode = 0; // 0 = IDLE, 1 = CAPTURE, 2 = WAITING, 3 = CORRECT, 4 = INCORRECT
 
 Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 
@@ -22,10 +22,14 @@ void rainbow(uint8_t wait);
 uint32_t Wheel(byte WheelPos);
 int adjustBrightness(String args);
 void handleIdle(const char *event, const char *payload);
+void handleCapture(const char *event, const char *payload);
 void handleWaiting(const char *event, const char *payload);
+void handleCorrect(const char *event, const char *payload);
+void handleIncorrect(const char *event, const char *payload);
 
 void NewKITT(byte red, byte green, byte blue, int EyeSize, int SpeedDelay, int ReturnDelay);
 void RunningLights(byte red, byte green, byte blue, int WaveDelay);
+void theaterChase(byte red, byte green, byte blue, int SpeedDelay);
 
 void setup()
 {
@@ -36,7 +40,10 @@ void setup()
   Particle.function("adjBright", adjustBrightness);
 
   Mesh.subscribe("state/idle", handleIdle);
+  Mesh.subscribe("state/capture", handleCapture);
   Mesh.subscribe("state/waiting", handleWaiting);
+  Mesh.subscribe("state/correct", handleCorrect);
+  Mesh.subscribe("state/incorrect", handleIncorrect);
 }
 
 void loop()
@@ -48,12 +55,22 @@ void loop()
   }
   else if (mode == 1)
   {
+    rainbow(20);
+  }
+  else if (mode == 2)
+  {
     // Waiting Animation
     RunningLights(0xff, 0xff, 0x00, 50);
   }
-  else
+  else if (mode == 3)
   {
-    rainbow(20);
+    // Inference was correct
+    theaterChase(0, 0xff, 0, 50); // Green
+  }
+  else if (mode == 4)
+  {
+    // Inference was incorrect
+    theaterChase(0xff, 0, 0, 50); // Red
   }
 }
 
@@ -78,9 +95,24 @@ void handleIdle(const char *event, const char *payload)
   mode = 0;
 }
 
-void handleWaiting(const char *event, const char *payload)
+void handleCapture(const char *event, const char *payload)
 {
   mode = 1;
+}
+
+void handleWaiting(const char *event, const char *payload)
+{
+  mode = 2;
+}
+
+void handleCorrect(const char *event, const char *payload)
+{
+  mode = 3;
+}
+
+void handleIncorrect(const char *event, const char *payload)
+{
+  mode = 4;
 }
 
 void rainbow(uint8_t wait)
@@ -137,6 +169,28 @@ void setAll(byte red, byte green, byte blue)
     setPixel(i, red, green, blue);
   }
   showStrip();
+}
+
+void theaterChase(byte red, byte green, byte blue, int SpeedDelay)
+{
+  for (int j = 0; j < 10; j++)
+  { //do 10 cycles of chasing
+    for (int q = 0; q < 3; q++)
+    {
+      for (int i = 0; i < PIXEL_COUNT; i = i + 3)
+      {
+        setPixel(i + q, red, green, blue); //turn every third pixel on
+      }
+      showStrip();
+
+      delay(SpeedDelay);
+
+      for (int i = 0; i < PIXEL_COUNT; i = i + 3)
+      {
+        setPixel(i + q, 0, 0, 0); //turn every third pixel off
+      }
+    }
+  }
 }
 
 void RunningLights(byte red, byte green, byte blue, int WaveDelay)

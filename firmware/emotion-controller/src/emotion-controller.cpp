@@ -36,6 +36,8 @@ void exitResponse();
 int triggerCapture(String args);
 int triggerIdle(String args);
 int triggerWaiting(String args);
+int triggerCorrect(String args);
+int triggerIncorrect(String args);
 
 // Utility functions
 void resetLEDs();
@@ -105,6 +107,8 @@ void setup()
   Particle.function("tgCap", triggerCapture);
   Particle.function("tgIdle", triggerIdle);
   Particle.function("tgWait", triggerWaiting);
+  Particle.function("tgCorrect", triggerCorrect);
+  Particle.function("tgIncorrect", triggerIncorrect);
   Particle.variable("state", state);
 }
 
@@ -138,6 +142,13 @@ void updateIdle()
     digitalWrite(RED_LED, !toggleState);
 
     toggleState = !toggleState;
+  }
+
+  if (greenDebouncer.update() && greenDebouncer.read() == LOW)
+  {
+    sendSerial("reset");
+
+    controllerFSM.transitionTo(Capture);
   }
 }
 
@@ -241,11 +252,15 @@ void updateResponse()
   {
     responseCaptured = true;
     sendSerial("yes");
+
+    Mesh.publish("state/correct", NULL);
   }
   else if (redDebouncer.update() && redDebouncer.read() == LOW && !responseCaptured)
   {
     responseCaptured = true;
     sendSerial("no");
+
+    Mesh.publish("state/correct", NULL);
   }
 
   if (responseCaptured)
@@ -277,6 +292,20 @@ int triggerIdle(String args)
 int triggerWaiting(String args)
 {
   controllerFSM.transitionTo(Waiting);
+
+  return 1;
+}
+
+int triggerCorrect(String args)
+{
+  Mesh.publish("state/correct");
+
+  return 1;
+}
+
+int triggerIncorrect(String args)
+{
+  Mesh.publish("state/incorrect");
 
   return 1;
 }
