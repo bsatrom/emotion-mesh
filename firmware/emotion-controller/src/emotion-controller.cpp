@@ -260,11 +260,12 @@ void updateResponse()
     responseCaptured = true;
     sendSerial("no");
 
-    Mesh.publish("state/correct", NULL);
+    Mesh.publish("state/incorrect", NULL);
   }
 
   if (responseCaptured)
   {
+    delay(10000); // Pause to allow the result to show on the neopixel strips
     controllerFSM.transitionTo(Idle);
   }
 }
