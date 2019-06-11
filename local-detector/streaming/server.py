@@ -412,7 +412,7 @@ class StreamingServer:
                 move(cloud_path + root_mod_file, sd_path)
             
             # Call back to client with results image and emotion model result
-            for cl in self._enabled_clients:
+            for cl in self._clients: # Send to all clients, including serial monitor
                 cl.send_detection_result(os.path.splitext(captured_frame)[0] + '.png', str(faceDictionary))
                 
             move(cloud_path + captured_frame, sd_path)
@@ -573,9 +573,9 @@ class Client:
     
     def send_detection_result(self, imagePath, emotionResult):
         """Can be called by any user thread."""
+        print('HERE: ' + str(self))
         with self._lock:
-            if self._state != ClientState.DISABLED:
-                self._queue_detection_result(imagePath, emotionResult)
+            self._queue_detection_result(imagePath, emotionResult)
             
     def _send_command(self, command):
         self._commands.put((self, command))
