@@ -191,9 +191,13 @@ void updateWaiting()
       else
       {
         // End of line character found, process line
-        if (atoi(readBuf) == 1)
+        if (atoi(readBuf) == 1) // Face Found
         {
           controllerFSM.transitionTo(Response);
+        }
+        else if (atoi(readBuf) == 2) // No Face Found
+        {
+          controllerFSM.transitionTo(Capture);
         }
 
         readBuf[readBufOffset] = 0;
