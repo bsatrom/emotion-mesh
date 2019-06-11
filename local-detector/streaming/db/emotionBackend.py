@@ -3,6 +3,9 @@ import time
 from . import db_config as config
 
 def createResult(img, faceDictionary):
+  if not faceDictionary:
+    return
+
   print('Connecting to DB to save result')
   connection = pymysql.connect(host='localhost', 
                             user=config.db_user,

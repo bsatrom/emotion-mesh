@@ -368,6 +368,8 @@ class StreamingServer:
             
             # Remove photos from assets/emotion_files to clear out data from previous runs
             assets_path = '/home/mendel/emotion-mesh/local-detector/streaming/assets/emotion-files/'
+            sd_path = '/disk1/images/'
+            
             for afile in os.listdir(assets_path):
                 file_path = os.path.join(assets_path, afile)
                 try:
@@ -392,27 +394,28 @@ class StreamingServer:
             faceDictionary = perform_cloud_detection(captured_frame)
 
             # Save result to backend
-            globals.last_image = os.path.splitext(captured_frame)[0]
-            emotionBackend.createResult(globals.last_image, faceDictionary)
-            
-            # Call local detector
-            # TODO: This requires some additional work and a TF2.0 port of an existing emotion model to work
-            
-            root_mod_file = os.path.splitext(captured_frame)[0] + '_modified.png'
-            # Move modified photo into streaming/assets folder
-            copyfile(cloud_path + root_mod_file, assets_path + captured_frame)
+            if not faceDictionary:
+                logger.info('No faces detected. Resetting...')
+            else:
+                globals.last_image = os.path.splitext(captured_frame)[0]
+                emotionBackend.createResult(globals.last_image, faceDictionary)
+                
+                # Call local detector
+                # TODO: This requires some additional work and a TF2.0 port of an existing emotion model to work
+                
+                root_mod_file = os.path.splitext(captured_frame)[0] + '_modified.png'
+                # Move modified photo into streaming/assets folder
+                copyfile(cloud_path + root_mod_file, assets_path + captured_frame)
+                
+                # Move original and results files to SD Card
+                logger.info('Processing complete. Moving images to SD and performing cleanup.')
+                move(cloud_path + root_mod_file, sd_path)
             
             # Call back to client with results image and emotion model result
-            # Use self._enabled_clients to send a message to the web client
-            for cl in self._enabled_clients:
+            for cl in self._clients: # Send to all clients, including serial monitor
                 cl.send_detection_result(os.path.splitext(captured_frame)[0] + '.png', str(faceDictionary))
-            
-            # Move original and results files to SD Card
-            logger.info('Processing complete. Moving images to SD and performing cleanup.')
-            sd_path = '/disk1/images/'
+                
             move(cloud_path + captured_frame, sd_path)
-            move(cloud_path + root_mod_file, sd_path)
-            
             # Cleanup the local file
             os.remove(local_path + captured_frame)
             logger.info('Cleanup complete!')
@@ -571,8 +574,7 @@ class Client:
     def send_detection_result(self, imagePath, emotionResult):
         """Can be called by any user thread."""
         with self._lock:
-            if self._state != ClientState.DISABLED:
-                self._queue_detection_result(imagePath, emotionResult)
+            self._queue_detection_result(imagePath, emotionResult)
             
     def _send_command(self, command):
         self._commands.put((self, command))
