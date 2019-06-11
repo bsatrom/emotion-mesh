@@ -142,16 +142,16 @@ window.onload = function() {
         case 'detectionResult':
           // Update state with image path and detection result
           data = window.app.$data;
-          window.app.$notification.open({
-            duration: 3000,
-            hasIcon: true,
-            message: 'Image Processed!',
-            type: 'is-success'
-          });
-
           let emotionData = JSON.parse(clientBound.detectionResult.emotionResult.replace(/'/g,'"'));
           
           if (emotionData[0]) {
+            window.app.$notification.open({
+              duration: 3000,
+              hasIcon: true,
+              message: 'Image Processed!',
+              type: 'is-success'
+            });
+  
             emotionData = emotionData[0];
             const emotionKeys = Object.keys(emotionData).sort();
             let emotionVals = [];
@@ -176,10 +176,10 @@ window.onload = function() {
             data.captureMode = false;
           } else {
             window.app.$notification.open({
-              duration: 5000,
+              duration: 4000,
               hasIcon: true,
               message: 'Unable to find face. Please try again...',
-              type: 'is-error'
+              type: 'is-danger'
             });
             window.app.reset();
           }
