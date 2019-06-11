@@ -65,7 +65,7 @@
         <div class="results" v-show="!captureMode && resultImage !== ''">
           <img v-if="resultImage !== ''" :src=`emotion-files/${resultImage}` class="result-image" />
         </div>
-        <div class="chart" v-show="!!emotionResult || gotStats">
+        <div class="chart" v-show="emotionResult.length > 0  || gotStats">
           <canvas id="resultChart"></canvas>
         </div>
       </div>
@@ -80,7 +80,7 @@
       </b-message>
       <b-message v-if="isAwaitingResponse" title="How did the machine do?" size="is-large" :closable="false"
         type="is-warning" has-icon>
-        The machine predicted <strong>{{ mainEmotion }}</strong>. Is this correct? <br />
+        The machine predicted <strong>{{ mainEmotion.join(', ') }}</strong>. Is this correct? <br />
         Hit the <strong style="color: green;">GREEN</strong> button if yes. <strong style="color: red;">RED</strong> if
         no.
       </b-message>
@@ -109,8 +109,9 @@
         captureMode: true,
         isFullPage: true,
         resultImage: '',
-        emotionResult: null,
+        emotionResult: [],
         lastInference: null,
+        numberOfFaces: 0,
         mainEmotion: '',
         isProcessing: false,
         isAwaitingResponse: false,
@@ -151,7 +152,8 @@
           this.inferenceResponse = false;
           this.isAwaitingResponse = false;
           this.resultImage = '';
-          this.emotionResult = null;
+          this.numberOfFaces = 0;
+          this.emotionResult = [];
         }
       }
     });

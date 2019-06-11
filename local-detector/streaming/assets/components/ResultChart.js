@@ -11,17 +11,23 @@ const backgroundColors = [
 const chartLabels = ['Anger', 'Contempt', 'Disgust', 'Fear', 'Happiness', 'Neutral', 'Sadness', 'Surprise'];
 
 function initResultChart (res) {
-  var ctx = document.getElementById('resultChart').getContext('2d');
-  var chart = new Chart(ctx, {
+  let ctx = document.getElementById('resultChart').getContext('2d');
+  let datasets = [];
+  
+  for (let k = 0; k < res.length; k++) {
+    datasets.push({
+      label: `Emotion Detection Result #${k+1}`,
+      data: res[k],
+      backgroundColor: backgroundColors,
+      borderWidth: 1
+    })
+  }
+
+  let chart = new Chart(ctx, {
     type: 'doughnut',
     data: {
       labels: chartLabels,
-      datasets: [{
-        label: 'Emotion Detection Result',
-        data: res,
-        backgroundColor: backgroundColors,
-        borderWidth: 1
-      }]
+      datasets: datasets
     },
 
     // Configuration options go here
@@ -31,9 +37,14 @@ function initResultChart (res) {
         labels: {
           // Filter out labels with no result
           filter: function(item, data) {
-            const items = data.datasets[0].data 
-            const emotionIdx = data.labels.findIndex(i => i === item.text);
-            return items[emotionIdx] > 0;
+            let found = false;
+            for (var i = 0; i < data.datasets.length; i++) {
+              let items = data.datasets[i].data;
+              const emotionIdx = data.labels.findIndex(i => i === item.text);
+              if (items[emotionIdx] > 0) found = true;
+            }
+
+            return found;
           }
         }
       },
@@ -41,6 +52,7 @@ function initResultChart (res) {
         display: true,
         text: 'Emotion Detection Result'
       },
+      cutoutPercentage: 30,
       animation: {
         animateScale: true,
         duration: 5000

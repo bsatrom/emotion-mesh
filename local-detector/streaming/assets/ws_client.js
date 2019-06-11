@@ -152,25 +152,38 @@ window.onload = function() {
               type: 'is-success'
             });
   
-            emotionData = emotionData[0];
-            const emotionKeys = Object.keys(emotionData).sort();
-            let emotionVals = [];
-            for (let i = 0; i < emotionKeys.length; i++) {
-              emotionVals.push(emotionData[emotionKeys[i]]);
+            // process all emotions if more than one
+            data.numberOfFaces = emotionData.length;
+            let emotionSets = [];
+            let mainEmotions = [];
+            
+            for (let i = 0; i < emotionData.length; i++) {
+              eData = emotionData[i];
+              const emotionKeys = Object.keys(eData).sort();
+              let emotionVals = [];
+              for (let j = 0; j < emotionKeys.length; j++) {
+                emotionVals.push(eData[emotionKeys[j]]);
+              }
+
+              // Capture main emotion
+              highestResult = Object.values(eData).sort((x, y) => y - x)[0];
+              Object.keys(eData).forEach((item) => {
+                if (eData[item] == highestResult) {
+                   mainEmotions.push(item);
+                }
+              });
+
+              emotionSets.push(emotionVals);
             }
             
-            window.app.showResultChart(emotionVals);
+            data.mainEmotion = mainEmotions;
+
+            window.app.showResultChart(emotionSets);
             
             data.isProcessing = false;
             data.resultImage = clientBound.detectionResult.imagePath;
             data.emotionResult = emotionData;
-            // Capture main emotion
-            highestResult = Object.values(emotionData).sort((x, y) => y - x)[0];
-            Object.keys(emotionData).forEach((item) => {
-              if (emotionData[item] == highestResult) {
-                data.mainEmotion = item;
-              }
-            });
+            
             data.isAwaitingResponse = true;
 
             data.captureMode = false;
