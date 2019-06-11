@@ -573,7 +573,6 @@ class Client:
     
     def send_detection_result(self, imagePath, emotionResult):
         """Can be called by any user thread."""
-        print('HERE: ' + str(self))
         with self._lock:
             self._queue_detection_result(imagePath, emotionResult)
             

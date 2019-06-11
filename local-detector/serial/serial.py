@@ -6,6 +6,8 @@ import sys
 import websocket
 import socket, threading
 
+# UART 1 on the Coral
+serial = Serial("/dev/ttymxc2", 115200)
 sock_ip = "192.168.10.216:4664"
 
 # import protobuf
@@ -13,9 +15,6 @@ sys.path.insert(0, '/home/mendel/emotion-mesh/local-detector/streaming')
 import proto.messages_pb2 as messages_pb2
 
 def start_serial(ws):
-  # UART 1 on the Coral
-  serial = Serial("/dev/ttymxc2", 115200)
-
   print('Waiting for a message from the Argon...')
   
   # wait for something from the Argon to trigger the demo
@@ -44,10 +43,6 @@ def capture_image(serial, ws):
   
   ws.send(message.SerializeToString(), 0x2)
   print('Message sent...')
-  sleep(1)
-  print('Sending response to controller...')
-  serial.write(b'1\n')
-  serial.flush()
 
 def send_reset(ws):
   message = messages_pb2.ServerBound(reset=messages_pb2.Reset())  
@@ -71,7 +66,11 @@ def on_message(ws, message):
       emotionResult = eval(msg.detectionResult.emotionResult)
       if not emotionResult:
         print('No emotion result detected. Issuing reset command to controller via UART.')
-        # TODO implement serial.send
+        serial.write(b'2\n')
+      else:
+        print('Sending response to controller...')
+        serial.write(b'1\n')
+      serial.flush()
 
 def on_error(ws, error):
     print('Websocket error: ' + str(error))
