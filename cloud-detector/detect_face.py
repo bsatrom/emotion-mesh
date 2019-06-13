@@ -52,6 +52,7 @@ def perform_cloud_detection(image):
     faces = CF.face.detect(image_path, face_id=True,
                         landmarks=False, attributes=attrs)
 
+    print('FACE: ' + str(faces))
     img = Image.open(image_path)
 
     # For each face returned use the face rectangle and draw a red box.

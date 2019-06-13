@@ -11,7 +11,10 @@ const backgroundColors = [
 const chartLabels = ['Anger', 'Contempt', 'Disgust', 'Fear', 'Happiness', 'Neutral', 'Sadness', 'Surprise'];
 
 function initResultChart (res) {
-  let ctx = document.getElementById('resultChart').getContext('2d');
+  const canvas = document.getElementById('resultChart');
+  let ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   let datasets = [];
   
   for (let k = 0; k < res.length; k++) {
@@ -32,6 +35,7 @@ function initResultChart (res) {
 
     // Configuration options go here
     options: {
+      events: ['click'],
       legend: {
         display: true,
         labels: {
@@ -62,7 +66,10 @@ function initResultChart (res) {
 };
 
 function getStatsChart(res) {
-  var ctx = document.getElementById('resultChart').getContext('2d');
+  const canvas = document.getElementById('resultChart');
+  let ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   var chart = new Chart(ctx, {
     type: 'horizontalBar',
     data: {
@@ -76,6 +83,7 @@ function getStatsChart(res) {
     },
 
     options: {
+      events: ['click'],
       legend: {
         display: false
       },
