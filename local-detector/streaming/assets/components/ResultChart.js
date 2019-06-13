@@ -56,6 +56,29 @@ function initResultChart (res) {
         display: true,
         text: 'Emotion Detection Result'
       },
+      plugins: {
+        datalabels: {
+          align: 'middle',
+          anchor: 'middle',        
+          backgroundColor: function(context) {
+            return context.dataset.backgroundColor;
+          },
+          font: {
+            size: '28'
+          },
+          display: function(context) {
+            const index = context.dataIndex;
+            const value = context.dataset.data[index];
+
+            return Math.round(value*100) > 0;
+          },
+          borderRadius: 4,
+          color: 'black',
+          formatter: function(value, context) {
+            return Math.round(value*100) + '%';
+          }
+        }
+      },
       cutoutPercentage: 30,
       animation: {
         animateScale: true,
@@ -94,6 +117,23 @@ function getStatsChart(res) {
       animation: {
         animateScale: true,
         duration: 5000
+      },
+      plugins: {
+        datalabels: {
+          align: 'end',
+          anchor: 'end',        
+          backgroundColor: function(context) {
+            return context.dataset.backgroundColor;
+          },
+          font: {
+            size: '24'
+          },
+          borderRadius: 4,
+          color: 'black',
+          formatter: function(value, context) {
+            return Math.round(value) + '%';
+          }
+        }
       }
     }
   });
