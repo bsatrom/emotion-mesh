@@ -11,7 +11,7 @@ start = time.time()
 # parameters for loading data and images
 detection_model_path = 'haarcascade_files/haarcascade_frontalface_default.xml'
 emotion_model_path = 'models/_mini_XCEPTION.134-0.66.hdf5'
-img_path = 'sample/img-0000819455.png'
+img_path = 'sample/horns.png'
 
 # hyper-parameters for bounding boxes shape
 # loading models
@@ -42,8 +42,8 @@ if len(faces) > 0:
 
     emotion_probability = np.max(preds)
     label = EMOTIONS[preds.argmax()]
-    cv2.putText(orig_frame, label, (fX, fY - 10),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+    cv2.putText(orig_frame, label, (fX, fY - 20),
+                cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 255, 255), 2)
     cv2.rectangle(orig_frame, (fX, fY), (fX + fW, fY + fH), (0, 0, 255), 2)
 
 # Show the image on the screen
