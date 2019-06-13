@@ -22,10 +22,11 @@ assert subscription_key
 face_api_url = config.face_api_url
 assert face_api_url
 
-image_base_path = 'cloud-detector/resources/'
+image_base_path = os.getcwd() + '/resources/'
 image_name = os.path.splitext(args.image_path)[0]
 image_path = image_base_path + args.image_path
 
+print(image_path)
 CF.Key.set(subscription_key)
 CF.BaseUrl.set(face_api_url)
 
@@ -39,7 +40,7 @@ def getCoordsForText(faceDictionary):
     rect = faceDictionary['faceRectangle']
     left = rect['left']
     top = rect['top']
-    return (left, top - 10)
+    return (left, top - 50)
 
 # Convert width height to a point in a rectangle
 
@@ -56,12 +57,15 @@ def getRectangle(faceDictionary):
 def getMainEmotion(faceDictionary):
     # Get the emotion collection and sort in acending order to get the top result
     emotions = faceDictionary['faceAttributes']['emotion']
-    # print(emotions)
+    print(emotions)
     emotions = sorted(emotions, key=emotions.get, reverse=True)
     return emotions[0]
 
 
 img = Image.open(image_path)
+
+# Get a font for drawing text
+fnt = ImageFont.truetype('cloud-detector/resources/Roboto-Regular.ttf', 50)
 
 # For each face returned use the face rectangle and draw a red box.
 draw = ImageDraw.Draw(img)
@@ -70,7 +74,7 @@ for face in faces:
     draw.rectangle(getRectangle(face), outline='red')
     # write the predominant emotion over the bounding box
     draw.text(getCoordsForText(face), getMainEmotion(
-        face), fill=(255, 255, 255, 255))
+        face), fill=(255, 255, 255, 255), font=fnt)
 
 # Display the image in the users default image browser.
 img.show()
