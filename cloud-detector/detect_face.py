@@ -21,7 +21,7 @@ def getCoordsForText(faceDictionary):
     rect = faceDictionary['faceRectangle']
     left = rect['left']
     top = rect['top']
-    return (left, top - 10)
+    return (left, top - 25)
 
 # Convert width height to a point in a rectangle
 
@@ -63,7 +63,7 @@ def perform_cloud_detection(image):
     emotions = []
 
     # Get a font for drawing text
-    fnt = ImageFont.truetype('cloud-detector/resources/Roboto-Regular.ttf', 50)
+    fnt = ImageFont.truetype('cloud-detector/resources/Roboto-Regular.ttf', 18)
 
     draw = ImageDraw.Draw(img)
     for face in faces:
@@ -71,8 +71,8 @@ def perform_cloud_detection(image):
         draw.rectangle(getRectangle(face), outline='red')
         # write the predominant emotion over the bounding box
         draw.text(getCoordsForText(face), getMainEmotion(
-            face), fill=(255, 255, 255, 255))
-        emotions.append(face['faceAttributes']['emotion'], font=fnt)
+            face), fill=(255, 255, 255, 255), font=fnt)
+        emotions.append(face['faceAttributes']['emotion'])
 
     # Display the image in the users default image browser.
     img.save(image_base_path + image_name + "_modified.png", "PNG")
