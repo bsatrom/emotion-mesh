@@ -5,7 +5,7 @@
         "*.ino": "cpp"
     },
     "particle.targetDevice": "emotion-mesh-gateway",
-    "particle.firmwareVersion": "1.2.1-rc.2",
+    "particle.firmwareVersion": "1.3.0-rc.1",
     "particle.targetPlatform": "argon",
-    "cortex-debug.openocdPath": "/Users/bsatrom/.particle/toolchains/openocd/0.10.0-particle.1/bin/openocd"
+    "cortex-debug.openocdPath": "${command:particle.getDebuggerOpenocdPath}"
 }

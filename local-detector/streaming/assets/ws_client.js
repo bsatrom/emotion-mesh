@@ -11,7 +11,7 @@ function createPlayer(width, height, streamControl) {
   });
 
   var frameCount = 0
-  player.onPictureDecoded = function(data) {
+  player.onPictureDecoded = function (data) {
     if (frameCount == 0) {
       console.log("First frame decoded");
     }
@@ -39,15 +39,15 @@ function createPlayer(width, height, streamControl) {
 }
 
 function captureFrame() {
-  protobuf.load("messages.proto", function(err, root) {
+  protobuf.load("messages.proto", function (err, root) {
     var ServerBound = root.lookupType("ServerBound");
     var socket = new WebSocket("ws://" + window.location.host + "/stream");
-    
+
     socket.binaryType = "arraybuffer";
 
-    socket.onopen = function(event) {
+    socket.onopen = function (event) {
       console.log("Socket connected for image capture.");
-      serverBound = ServerBound.create({frameCapture: {overlay:false}});
+      serverBound = ServerBound.create({ frameCapture: { overlay: false } });
 
       socket.send(ServerBound.encode(serverBound).finish());
     };
@@ -55,23 +55,23 @@ function captureFrame() {
 }
 
 function getStats() {
-  protobuf.load("messages.proto", function(err, root) {
+  protobuf.load("messages.proto", function (err, root) {
     var ServerBound = root.lookupType("ServerBound");
     var socket = new WebSocket("ws://" + window.location.host + "/stream");
-    
+
     socket.binaryType = "arraybuffer";
 
-    socket.onopen = function(event) {
+    socket.onopen = function (event) {
       console.log("Socket connected for image capture.");
 
-      serverBound = ServerBound.create({resultStats: {}});
+      serverBound = ServerBound.create({ resultStats: {} });
       socket.send(ServerBound.encode(serverBound).finish());
     };
   });
 }
 
-window.onload = function() {
-  protobuf.load("messages.proto", function(err, root) {
+window.onload = function () {
+  protobuf.load("messages.proto", function (err, root) {
     if (err)
       throw err;
 
@@ -79,28 +79,28 @@ window.onload = function() {
     var ServerBound = root.lookupType("ServerBound");
 
     function streamControl(enabled) {
-        serverBound = ServerBound.create({streamControl: {enabled:enabled}});
-        socket.send(ServerBound.encode(serverBound).finish());
+      serverBound = ServerBound.create({ streamControl: { enabled: enabled } });
+      socket.send(ServerBound.encode(serverBound).finish());
     }
 
     var player = null;
     var socket = new WebSocket("ws://" + window.location.host + "/stream");
     socket.binaryType = "arraybuffer";
 
-    socket.onopen = function(event) {
+    socket.onopen = function (event) {
       console.log("Socket connected.");
       streamControl(true);
     };
 
-    socket.onclose = function(event) {
+    socket.onclose = function (event) {
       console.log("Socket closed.");
     };
 
-    socket.onerror = function(err) {
+    socket.onerror = function (err) {
       console.log("Socket error: ", err);
     }
 
-    socket.onmessage = function(event) {
+    socket.onmessage = function (event) {
       var clientBound = ClientBound.decode(new Uint8Array(event.data))
       switch (clientBound.message) {
         case 'start':
@@ -111,7 +111,7 @@ window.onload = function() {
             player = createPlayer(start.width, start.height, streamControl);
             console.log("Started: " + start.width + "x" + start.height);
           }
-          
+
           break;
         case 'video':
           player.decode(clientBound.video.data);
@@ -120,7 +120,7 @@ window.onload = function() {
           var canvas = document.getElementById("overlay");
           var ctx = canvas.getContext("2d");
           var img = new Image();
-          img.onload = function() {
+          img.onload = function () {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
           }
@@ -131,8 +131,8 @@ window.onload = function() {
           break;
         case 'processing':
           data = window.app.$data;
-          data.isProcessing = true;  
-          window.app.$notification.open({
+          data.isProcessing = true;
+          window.app.$buefy.notification.open({
             hasIcon: true,
             message: 'Performing inference...',
             type: 'is-info'
@@ -142,21 +142,21 @@ window.onload = function() {
         case 'detectionResult':
           // Update state with image path and detection result
           data = window.app.$data;
-          let emotionData = JSON.parse(clientBound.detectionResult.emotionResult.replace(/'/g,'"'));
-          
+          let emotionData = JSON.parse(clientBound.detectionResult.emotionResult.replace(/'/g, '"'));
+
           if (emotionData[0]) {
-            window.app.$notification.open({
+            window.app.$buefy.notification.open({
               duration: 3000,
               hasIcon: true,
               message: 'Image Processed!',
               type: 'is-success'
             });
-  
+
             // process all emotions if more than one
             data.numberOfFaces = emotionData.length;
             let emotionSets = [];
             let mainEmotions = [];
-            
+
             for (let i = 0; i < emotionData.length; i++) {
               eData = emotionData[i];
               const emotionKeys = Object.keys(eData).sort();
@@ -169,26 +169,26 @@ window.onload = function() {
               highestResult = Object.values(eData).sort((x, y) => y - x)[0];
               Object.keys(eData).forEach((item) => {
                 if (eData[item] == highestResult) {
-                   mainEmotions.push(item);
+                  mainEmotions.push(item);
                 }
               });
 
               emotionSets.push(emotionVals);
             }
-            
+
             data.mainEmotion = mainEmotions;
 
             window.app.showResultChart(emotionSets);
-            
+
             data.isProcessing = false;
             data.resultImage = clientBound.detectionResult.imagePath;
             data.emotionResult = emotionData;
-            
+
             data.isAwaitingResponse = true;
 
             data.captureMode = false;
           } else {
-            window.app.$notification.open({
+            window.app.$buefy.notification.open({
               duration: 4000,
               hasIcon: true,
               message: 'Unable to find face. Please try again...',
@@ -212,7 +212,7 @@ window.onload = function() {
           }
           getStats();
 
-          window.app.$notification.open({
+          window.app.$buefy.notification.open({
             duration: 3000,
             hasIcon: true,
             message: msg,
@@ -223,7 +223,7 @@ window.onload = function() {
           break;
         case 'stats':
           data = window.app.$data;
-          
+
           stats = data.stats;
           stats.total = clientBound.stats.total;
           stats.correct = clientBound.stats.correct;
@@ -236,7 +236,7 @@ window.onload = function() {
           stats.averages.neutral = Math.round(clientBound.stats.neutral * 100);
           stats.averages.sadness = Math.round(clientBound.stats.sadness * 100);
           stats.averages.surprise = Math.round(clientBound.stats.surprise * 100);
-          
+
           data.gotStats = true;
           if (!data.isAwaitingResponse) {
             const emotionVals = [

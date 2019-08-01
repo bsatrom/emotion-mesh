@@ -1,19 +1,22 @@
+from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
+import cognitive_face as CF
 import requests
 import json
 import os
 import config
 import operator
 import argparse
+import time
 
-import cognitive_face as CF
-from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont
+start = time.time()
+
 
 parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--image_path',
                     help='Path to a local image file to process',
-                    default='webcam-what-demo.png')
+                    default='horns.png')
 args = parser.parse_args()
 
 subscription_key = config.face_api_key
@@ -75,6 +78,10 @@ for face in faces:
     # write the predominant emotion over the bounding box
     draw.text(getCoordsForText(face), getMainEmotion(
         face), fill=(255, 255, 255, 255), font=fnt)
+
+end = time.time()
+
+print("Execution Time: " + str(end-start))
 
 # Display the image in the users default image browser.
 img.show()

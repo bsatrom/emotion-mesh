@@ -66,9 +66,14 @@ bool responseCaptured = false;
 
 unsigned long lastToggleMillis = 0;
 
+const unsigned long UPDATE_INTERVAL_MS = 10000;
+unsigned long lastUpdate = 0;
+
 const size_t READ_BUF_SIZE = 64;
 char readBuf[READ_BUF_SIZE];
 size_t readBufOffset = 0;
+
+void updateAdvertisingData(bool updateOnly);
 
 int sendSerial(String args)
 {
@@ -110,11 +115,20 @@ void setup()
   Particle.function("tgCorrect", triggerCorrect);
   Particle.function("tgIncorrect", triggerIncorrect);
   Particle.variable("state", state);
+
+  updateAdvertisingData(false);
 }
 
 void loop()
 {
   controllerFSM.update();
+
+  if (millis() - lastUpdate >= UPDATE_INTERVAL_MS)
+  {
+    lastUpdate = millis();
+
+    updateAdvertisingData(true);
+  }
 }
 
 void resetLEDs()
@@ -313,4 +327,39 @@ int triggerIncorrect(String args)
   Mesh.publish("state/incorrect");
 
   return 1;
+}
+
+void updateAdvertisingData(bool updateOnly)
+{
+  uint8_t buf[BLE_MAX_ADV_DATA_LEN];
+
+  size_t offset = 0;
+
+  buf[offset++] = 0xff;
+  buf[offset++] = 0xff;
+  buf[offset++] = 0x55;
+
+  uint8_t strLen = state.length();
+  buf[offset++] = strLen;
+
+  Particle.publish("ble/state", state.c_str());
+  Particle.publish("ble/length", String(strLen));
+
+  // Our specific data, EmotionMesh State
+  memcpy(&buf[offset], state.c_str(), strLen);
+  offset += strLen;
+
+  BleAdvertisingData advData;
+  advData.appendCustomData(buf, offset);
+
+  if (updateOnly)
+  {
+    // Only update data
+    BLE.setAdvertisingData(&advData);
+  }
+  else
+  {
+    BLE.setAdvertisingInterval(130);
+    BLE.advertise(&advData);
+  }
 }

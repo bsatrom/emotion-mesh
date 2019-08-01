@@ -37,8 +37,8 @@ if len(faces) > 0:
     roi = np.expand_dims(roi, axis=0)
     preds = emotion_classifier.predict(roi)[0]
 
-    # print(EMOTIONS)
-    # print(preds)
+    print(EMOTIONS)
+    print(preds)
 
     emotion_probability = np.max(preds)
     label = EMOTIONS[preds.argmax()]
@@ -47,7 +47,7 @@ if len(faces) > 0:
     cv2.rectangle(orig_frame, (fX, fY), (fX + fW, fY + fH), (0, 0, 255), 2)
 
 # Show the image on the screen
-#cv2.imshow('test_face', orig_frame)
+# cv2.imshow('test_face', orig_frame)
 
 cv2.imwrite(img_path.split('.')[0]+'_prediction.png', orig_frame)
 

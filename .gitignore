@@ -5,6 +5,7 @@ __pycache__/
 
 fer2013/
 .vscode/
+/.vscode
 
 config.py
 db-config.py
