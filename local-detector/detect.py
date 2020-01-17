@@ -153,7 +153,7 @@ def render_gen(args):
         inference_rate = next(fps_counter)
         if draw_overlay:
             start = time.monotonic()
-            objs = engine .DetectWithInputTensor(tensor, threshold=args.threshold, top_k=args.top_k)
+            objs = engine .detect_with_input_tensor(tensor, threshold=args.threshold, top_k=args.top_k)
             inference_time = time.monotonic() - start
             objs = [convert(obj, labels) for obj in objs]
 

@@ -8,7 +8,7 @@ import socket, threading
 
 # UART 1 on the Coral
 serial = Serial("/dev/ttymxc2", 115200)
-sock_ip = "192.168.10.216:4664"
+sock_ip = "127.0.0.1:4664" # Update with IP
 
 # import protobuf
 sys.path.insert(0, '/home/mendel/emotion-mesh/local-detector/streaming')
